@@ -1,18 +1,18 @@
 const mainC = [];
 const enemyC = [];
 
-const directions = ["h", "v"];
+const directions = ["h", "w"];
 
 function generateDirections(size) {
     const h = [];
-    const v = [];
+    const w = [];
 
     for (let i = 0; i < size; i++) {
         h.push(i);
-        v.push(i * 10);
+        w.push(i * 10);
     }
 
-    return { h, v };
+    return { h, w };
 }
 
 const allShips = [
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const enemyGrid = document.querySelector('.grid-enemy');
     const shipLayout = document.querySelector('.ships-container');
     const ships = document.querySelectorAll('.ship');
-    const btn = document.querySelector('#Play');
 
     const startBtn = document.getElementById("start");
     const turnsDisplay = document.querySelector('#turn');
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function connectionStatus(num) {
             let val = parseInt(num);
-            let player = `.p${parseInt(num) + 1}`;
+            let player = `.p${val + 1}`;
             document.querySelector(`${player} .connected span`).classList.toggle('green');
             if (player === pID) {
                 document.querySelector(player).classList.toggle('bold');
