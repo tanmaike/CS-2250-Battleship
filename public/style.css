@@ -1,5 +1,5 @@
 * {
-  font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 body {
@@ -13,225 +13,240 @@ body {
 }
 
 .div-header {
-  align-content: center;
-  text-align: center;
+    align-content: center;
+    text-align: center;
 }
 
 .headerButton {
-  background-color: #333333;
-  color: whitesmoke;
-  border: solid silver;
-  border-radius: 2px;
-  padding: 12px 20px;
-  text-align: center;
-  font-size: 16px;
-  transition-duration: 0.2s;
+    background-color: #333333;
+    color: whitesmoke;
+    border: solid silver;
+    border-radius: 2px;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 16px;
+    transition-duration: 0.2s;
 }
 
 .headerButton:hover {
-  background-color: #666666;
+    background-color: #666666;
 }
 
 .headerButton:active {
-  background-color: #222222;
+    background-color: #222222;
 }
 
 .div-battlefields {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .ship-panel {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .grid-main {
-  width: 400px;
-  height: 400px;
-  min-width: 400px;
-  min-height: 400px;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: #4da1d1;
-  margin: 20px;
+    width: 400px;
+    height: 400px;
+    min-width: 400px;
+    min-height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #4da1d1;
+    margin: 20px;
 }
 
 .grid-enemy {
-  width: 400px;
-  height: 400px;
-  min-width: 400px;
-  min-height: 400px;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: #3756a3;
-  margin: 20px;
+    width: 400px;
+    height: 400px;
+    min-width: 400px;
+    min-height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #3756a3;
+    margin: 20px;
 }
 
 .grid div {
-  width: 40px;
-  height: 40px;
+    width: 40px;
+    height: 40px;
 }
 
 #tileStyle {
-  box-shadow:inset 0px 0px 0px 0.2px #000000;
+    box-shadow:inset 0px 0px 0px 0.2px #000000;
 }
 
 .ships-div {
-  width: 240px;
-  min-width: 220px;
-  height: 360px;
-  background-image: linear-gradient(#666666, #333333);
-  margin: 20px;
-  overflow-y: scroll;
+    width: 240px;
+    min-width: 220px;
+    height: 360px;
+    background-image: linear-gradient(#666666, #333333);
+    margin: 20px;
+    overflow-y: scroll;
 }
 
 .ships-div::-webkit-scrollbar {
-  width: 5px;
+    width: 5px;
 }
 
 .ships-div::-webkit-scrollbar-track {
-  background-image: linear-gradient(#666666, #333333);
+    background-image: linear-gradient(#666666, #333333);
 }
 
-/* Handle */
 .ships-div::-webkit-scrollbar-thumb {
-  background: silver;
-  border-radius: 10px;
+    background: silver;
+    border-radius: 10px;
 }
 
 .rotateHeadsUp {
-  margin: 10px;
-  color: whitesmoke;
+    margin: 10px;
+    color: whitesmoke;
 }
 
 .Destroyer-div {
-  width: 80px;
-  height: 40px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  border-radius: 10px;
+    width: 80px;
+    height: 40px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    border-radius: 10px;
 }
+
 .Destroyer-div-v {
-  width: 40px;
-  height: 80px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  flex-wrap: wrap;
-  border-radius: 10px;
+    width: 40px;
+    height: 80px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
+
 .Submarine-div {
-  width: 120px;
-  height: 40px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  border-radius: 10px;
+    width: 120px;
+    height: 40px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    border-radius: 10px;
 }
+
 .Submarine-div-v {
-  width: 40px;
-  height: 120px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  flex-wrap: wrap;
-  border-radius: 10px;
+    width: 40px;
+    height: 120px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
+
 .Cruiser-div {
-  width: 120px;
-  height: 40px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  border-radius: 10px;
+    width: 120px;
+    height: 40px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    border-radius: 10px;
 }
+
 .Cruiser-div-v {
-  width: 40px;
-  height: 120px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  flex-wrap: wrap;
-  border-radius: 10px;
+    width: 40px;
+    height: 120px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
+
 .Battleship-div {
-  width: 160px;
-  height: 40px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  border-radius: 10px;
+    width: 160px;
+    height: 40px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    border-radius: 10px;
 }
+
 .Battleship-div-v {
-  width: 40px;
-  height: 160px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  flex-wrap: wrap;
-  border-radius: 10px;
+    width: 40px;
+    height: 160px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
+
 .Carrier-div {
-  width: 200px;
-  height: 40px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  border-radius: 10px;
+    width: 200px;
+    height: 40px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    border-radius: 10px;
 }
+
 .Carrier-div-v {
-  width: 40px;
-  height: 200px;
-  background-color: #aaaaaa;
-  display: flex;
-  margin: 5px;
-  flex-wrap: wrap;
-  border-radius: 10px;
+    width: 40px;
+    height: 200px;
+    background-color: #aaaaaa;
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
 
 .ship div {
-  width: 40px;
-  height: 40px;
+    width: 40px;
+    height: 40px;
 }
 .ship {
-  /* border: solid tomato; */
-  background-color: whitesmoke;
-  box-shadow:inset 0px 0px 0px 1px #000000;
+    background-color: whitesmoke;
+    box-shadow:inset 0px 0px 0px 1px #000000;
 }
 
 .hit {
-  background: 
-       linear-gradient(to top left,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 0.8px),
-           rgba(0,0,0,1) 50%,
-           rgba(0,0,0,0) calc(50% + 0.8px),
-           rgba(0,0,0,0) 100%),
-       linear-gradient(to top right,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 0.8px),
-           rgba(0,0,0,1) 50%,
-           rgba(0,0,0,0) calc(50% + 0.8px),
-           rgba(0,0,0,0) 100%);
-  background-color: red;
+    background: 
+    linear-gradient(to top left,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0) calc(50% - 0.8px),
+        rgba(0,0,0,1) 50%,
+        rgba(0,0,0,0) calc(50% + 0.8px),
+        rgba(0,0,0,0) 100%),
+    linear-gradient(to top right,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0) calc(50% - 0.8px),
+        rgba(0,0,0,1) 50%,
+        rgba(0,0,0,0) calc(50% + 0.8px),
+        rgba(0,0,0,0) 100%);
+    background-color: red;
 }
 
 .miss {
-  background-color: gray;
+    background-color: gray;
+}
+
+.playerTurn {
+    
+}
+
+.playerScore {
+    
 }
 
 .connected, .ready {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 .connected span,
 .ready span {
-  display: block;
-  width: 1rem;
-  height: 1rem;
-  background: red;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background: red;
 }
 
 span.green {

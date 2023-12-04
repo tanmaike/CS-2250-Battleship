@@ -52,7 +52,7 @@ function shipChar() {
 
 const game = {
     curr: "main",
-    score: {
+    playerScore: {
         main: shipChar(),
         enemy: shipChar()
     }
