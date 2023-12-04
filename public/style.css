@@ -17,6 +17,25 @@ body {
   text-align: center;
 }
 
+.headerButton {
+  background-color: #333333;
+  color: whitesmoke;
+  border: solid silver;
+  border-radius: 2px;
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 16px;
+  transition-duration: 0.2s;
+}
+
+.headerButton:hover {
+  background-color: #666666;
+}
+
+.headerButton:active {
+  background-color: #222222;
+}
+
 .div-grids {
   display: flex;
   flex-direction: row;
@@ -34,9 +53,10 @@ body {
   min-height: 400px;
   display: flex;
   flex-wrap: wrap;
-  background-color: lightblue;;
+  background-color: #4da1d1;
   margin: 20px;
 }
+
 .grid-enemy {
   width: 400px;
   height: 400px;
@@ -44,7 +64,7 @@ body {
   min-height: 400px;
   display: flex;
   flex-wrap: wrap;
-  background-color: rgb(46, 113, 139);
+  background-color: #3756a3;
   margin: 20px;
 }
 
@@ -54,18 +74,30 @@ body {
 }
 
 #tileStyle {
-  -webkit-box-shadow:inset 0px 0px 0px 0.2px #000000;
-  -moz-box-shadow:inset 0px 0px 0px 0.2px #000000;
   box-shadow:inset 0px 0px 0px 0.2px #000000;
 }
 
 .ships-container {
   width: 240px;
   min-width: 220px;
-  height: 400px;
-  background-color: blue;
+  height: 360px;
+  background-image: linear-gradient(#666666, #333333);
   margin: 20px;
   overflow-y: scroll;
+}
+
+.ships-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ships-container::-webkit-scrollbar-track {
+  background-image: linear-gradient(#666666, #333333);
+}
+
+/* Handle */
+.ships-container::-webkit-scrollbar-thumb {
+  background: silver;
+  border-radius: 10px;
 }
 
 .rotateHeadsUp {
@@ -76,7 +108,7 @@ body {
 .Destroyer-container {
   width: 80px;
   height: 40px;
-  background-color: white;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   border-radius: 10px;
@@ -84,7 +116,7 @@ body {
 .Destroyer-container-v {
   width: 40px;
   height: 80px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   flex-wrap: wrap;
@@ -93,7 +125,7 @@ body {
 .Submarine-container {
   width: 120px;
   height: 40px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   border-radius: 10px;
@@ -101,7 +133,7 @@ body {
 .Submarine-container-v {
   width: 40px;
   height: 120px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   flex-wrap: wrap;
@@ -110,7 +142,7 @@ body {
 .Cruiser-container {
   width: 120px;
   height: 40px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   border-radius: 10px;
@@ -118,7 +150,7 @@ body {
 .Cruiser-container-v {
   width: 40px;
   height: 120px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   flex-wrap: wrap;
@@ -127,7 +159,7 @@ body {
 .Battleship-container {
   width: 160px;
   height: 40px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   border-radius: 10px;
@@ -135,7 +167,7 @@ body {
 .Battleship-container-v {
   width: 40px;
   height: 160px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   flex-wrap: wrap;
@@ -144,7 +176,7 @@ body {
 .Carrier-container {
   width: 200px;
   height: 40px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   border-radius: 10px;
@@ -152,7 +184,7 @@ body {
 .Carrier-container-v {
   width: 40px;
   height: 200px;
-  background-color: whitesmoke;
+  background-color: #aaaaaa;
   display: flex;
   margin: 5px;
   flex-wrap: wrap;
@@ -166,8 +198,6 @@ body {
 .ship {
   /* border: solid tomato; */
   background-color: whitesmoke;
-  -webkit-box-shadow:inset 0px 0px 0px 1px #000000;
-  -moz-box-shadow:inset 0px 0px 0px 1px #000000;
   box-shadow:inset 0px 0px 0px 1px #000000;
 }
 

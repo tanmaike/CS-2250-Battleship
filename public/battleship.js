@@ -1,6 +1,5 @@
 const mainC = [];
 const enemyC = [];
-const width = 10;
 
 const directions = ["h", "v"];
 
@@ -68,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('#Play');
 
     const startBtn = document.getElementById("start");
-    const randomBtn = document.querySelector('#randomize');
     const turnsDisplay = document.querySelector('#turn');
     const resetBtn = document.querySelector('#reset');
 
@@ -158,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    render(mainGrid, mainC, width);
-    render(enemyGrid, enemyC, width);
+    render(mainGrid, mainC, 10);
+    render(enemyGrid, enemyC, 10);
 
     shipLayout.addEventListener('click', e => {
         if (e.target.parentElement.matches('div.ship'))
@@ -183,29 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
     mainGrid.addEventListener('drop', e => { dragDrop(e, target, mainC, shipLayout) });
     mainGrid.addEventListener('dragend', dragEnd);
 
-    randomBtn.addEventListener('click', function (event) {
-        function clearShipLayout() {
-            while (shipLayout.firstChild) {
-                shipLayout.removeChild(shipLayout.firstChild);
-            }
-        }
-
-        function makeShips() {
-            for (const ship of allShips) {
-                generate(directions, ship, mainC);
-            }
-        }
-
-        if (shipLayout.childElementCount == 5) {
-            makeShips();
-            clearShipLayout();
-        } else {
-            reset(event, shipLayout);
-            makeShips();
-            clearShipLayout();
-        }
-    });
-
     resetBtn.addEventListener('click', e => {
         startBtn.disabled = false;
         reset(e, shipLayout);
@@ -213,48 +188,49 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 function reset(e, shipLayout) {
-    //one way to reset the game is to reload the page... but this cannot be reused for the randomize button
     mainC.forEach(tile => {
-        if (tile.classList.contains('taken')) {
+        if (tile.classList.contains('occupied')) {
             tile.className = '';
         }
     })
     if (shipLayout) {
         shipLayout.innerHTML = `
-            <div class="ship destroyer-container" draggable="true">
-                <div id="destroyer-0"></div>
-                <div id="destroyer-1"></div>
+            <div class="ship Destroyer-container" draggable="true">
+                <div id="Destroyer-0"></div>
+                <div id="Destroyer-1"></div>
             </div>
-            <div class="ship submarine-container" draggable="true">
-                <div id="submarine-0"></div>
-                <div id="submarine-1"></div>
-                <div id="submarine-2"></div>
+            <div class="ship Submarine-container" draggable="true">
+                <div id="Submarine-0"></div>
+                <div id="Submarine-1"></div>
+                <div id="Submarine-2"></div>
             </div>
-            <div class="ship cruiser-container" draggable="true">
-                <div id="cruiser-0"></div>
-                <div id="cruiser-1"></div>
-                <div id="cruiser-2"></div>
+            <div class="ship Cruiser-container" draggable="true">
+                <div id="Cruiser-0"></div>
+                <div id="Cruiser-1"></div>
+                <div id="Cruiser-2"></div>
             </div>
-            <div class="ship battleship-container" draggable="true">
-                <div id="battleship-0"></div>
-                <div id="battleship-1"></div>
-                <div id="battleship-2"></div>
-                <div id="battleship-3"></div>
+            <div class="ship Battleship-container" draggable="true">
+                <div id="Battleship-0"></div>
+                <div id="Battleship-1"></div>
+                <div id="Battleship-2"></div>
+                <div id="Battleship-3"></div>
             </div>
-            <div class="ship carrier-container" draggable="true">
-                <div id="carrier-0"></div>
-                <div id="carrier-1"></div>
-                <div id="carrier-2"></div>
-                <div id="carrier-3"></div>
-                <div id="carrier-4"></div>
-            </div>`
+            <div class="ship Carrier-container" draggable="true">
+                <div id="Carrier-0"></div>
+                <div id="Carrier-1"></div>
+                <div id="Carrier-2"></div>
+                <div id="Carrier-3"></div>
+                <div id="Carrier-4"></div>
+            </div>
+            <h3 class="rotateHeadsUp">Click on the Ships to rotate them before placing them onto your grid!</h3>`
     }
 }
 
-// This function, renders the boards for the game,
-// it takes in parameters the grid for which we want to create tiles for,
-// the tiles array to keep record of the different tiles created,
-// and the width of the boards, so we know how many square to create.
+/*
+this function renders a grid (both main and enemy) by taking 
+the grid div, a blank array, and the desired size of the grids.
+this means 
+*/
 function render(grid, tiles, width) {
     for (let i = 0; i < width * width; i++) {
         const tile = document.createElement('div');
@@ -262,50 +238,6 @@ function render(grid, tiles, width) {
         tile.dataset.id = i;
         grid.appendChild(tile);
         tiles.push(tile);
-    }
-}
-
-// This function, places the ships in random positions in the main board in case it is a one-player game.
-// so this serves as the computer as enemy player.
-function generate(dir, ship, tiles) {
-    let rand = dir[Math.floor(Math.random() * dir.length)];
-    let current = ship.directions[rand];
-
-    let direction;
-    if (rand === "h") {
-        direction = 1;
-    } else {
-        direction = 10;
-    }
-    let randSt = Math.abs(Math.floor(Math.random() * tiles.length - (ship.directions["h"].length * direction)));
-
-    let occupied = false;
-    for (let i = 0; i < current.length; i++) {
-        if (tiles[randSt + current[i]].classList.contains('taken')) {
-            occupied = true;
-            break;
-        }
-    }
-    let right = false;
-    for (let i = 0; i < current.length; i++) {
-        if ((randSt + current[i]) % 10 === 9) {
-            right = true;
-            break;
-        }
-    }
-
-    let left = false;
-    for (let i = 0; i < current.length; i++) {
-        if ((randSt + current[i]) % 10 === 0) {
-            left = true;
-            break;
-        }
-    }
-
-    if (!occupied && !right && !left) {
-        current.forEach(index => tiles[randSt + index].classList.add('taken', ship.name, 'ship'))
-    } else {
-        generate(dir, ship, tiles)
     }
 }
 
@@ -330,13 +262,9 @@ function dragOver(e) {
 function dragEnter(e) {
     e.preventDefault();
 }
-function dragLeave() {
+function dragLeave() {  }
 
-}
-
-function dragEnd() {
-
-}
+function dragEnd() {  }
 
 function dragDrop(e, target, tiles, container) {
     let draggedShipNameWithLastId = target.ship.lastElementChild.id;
@@ -352,10 +280,10 @@ function dragDrop(e, target, tiles, container) {
     if (!isVertical) {
         console.log("draggedShipClass:", draggedShipClass);
         let current = allShips.find(ship => ship.name === draggedShipClass).directions.h;
-        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
         if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + i].classList.add('occupied', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
@@ -363,11 +291,11 @@ function dragDrop(e, target, tiles, container) {
         }
     } else {
         let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
-        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
 
         if (receivingSquare + (target.length - 1) * 10 < 100 && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('occupied', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
