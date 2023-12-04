@@ -36,12 +36,12 @@ body {
   background-color: #222222;
 }
 
-.div-grids {
+.div-battlefields {
   display: flex;
   flex-direction: row;
 }
 
-.panel {
+.ship-panel {
   display: flex;
   flex-direction: row;
 }
@@ -77,7 +77,7 @@ body {
   box-shadow:inset 0px 0px 0px 0.2px #000000;
 }
 
-.ships-container {
+.ships-div {
   width: 240px;
   min-width: 220px;
   height: 360px;
@@ -86,16 +86,16 @@ body {
   overflow-y: scroll;
 }
 
-.ships-container::-webkit-scrollbar {
+.ships-div::-webkit-scrollbar {
   width: 5px;
 }
 
-.ships-container::-webkit-scrollbar-track {
+.ships-div::-webkit-scrollbar-track {
   background-image: linear-gradient(#666666, #333333);
 }
 
 /* Handle */
-.ships-container::-webkit-scrollbar-thumb {
+.ships-div::-webkit-scrollbar-thumb {
   background: silver;
   border-radius: 10px;
 }
@@ -105,7 +105,7 @@ body {
   color: whitesmoke;
 }
 
-.Destroyer-container {
+.Destroyer-div {
   width: 80px;
   height: 40px;
   background-color: #aaaaaa;
@@ -113,7 +113,7 @@ body {
   margin: 5px;
   border-radius: 10px;
 }
-.Destroyer-container-v {
+.Destroyer-div-v {
   width: 40px;
   height: 80px;
   background-color: #aaaaaa;
@@ -122,7 +122,7 @@ body {
   flex-wrap: wrap;
   border-radius: 10px;
 }
-.Submarine-container {
+.Submarine-div {
   width: 120px;
   height: 40px;
   background-color: #aaaaaa;
@@ -130,7 +130,7 @@ body {
   margin: 5px;
   border-radius: 10px;
 }
-.Submarine-container-v {
+.Submarine-div-v {
   width: 40px;
   height: 120px;
   background-color: #aaaaaa;
@@ -139,7 +139,7 @@ body {
   flex-wrap: wrap;
   border-radius: 10px;
 }
-.Cruiser-container {
+.Cruiser-div {
   width: 120px;
   height: 40px;
   background-color: #aaaaaa;
@@ -147,7 +147,7 @@ body {
   margin: 5px;
   border-radius: 10px;
 }
-.Cruiser-container-v {
+.Cruiser-div-v {
   width: 40px;
   height: 120px;
   background-color: #aaaaaa;
@@ -156,7 +156,7 @@ body {
   flex-wrap: wrap;
   border-radius: 10px;
 }
-.Battleship-container {
+.Battleship-div {
   width: 160px;
   height: 40px;
   background-color: #aaaaaa;
@@ -164,7 +164,7 @@ body {
   margin: 5px;
   border-radius: 10px;
 }
-.Battleship-container-v {
+.Battleship-div-v {
   width: 40px;
   height: 160px;
   background-color: #aaaaaa;
@@ -173,7 +173,7 @@ body {
   flex-wrap: wrap;
   border-radius: 10px;
 }
-.Carrier-container {
+.Carrier-div {
   width: 200px;
   height: 40px;
   background-color: #aaaaaa;
@@ -181,7 +181,7 @@ body {
   margin: 5px;
   border-radius: 10px;
 }
-.Carrier-container-v {
+.Carrier-div-v {
   width: 40px;
   height: 200px;
   background-color: #aaaaaa;
