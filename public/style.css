@@ -1,166 +1,209 @@
-.div-grids{
-    display: flex;
-    flex-direction: row;
+* {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: #5f99c9;
+    background-image: url("seatexture.png");
+}
+
+.mainHeader {
+    text-align: center;
+    color: whitesmoke;
+}
+
+.div-header {
+  align-content: center;
+  text-align: center;
+}
+
+.div-grids {
+  display: flex;
+  flex-direction: row;
 }
 
 .panel {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
-.grid-host{
-    width: 400px;
-    height: 400px;
-    min-width: 400px;
-    min-height: 400px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: lightblue;;
-    margin: 20px;
+.grid-main {
+  width: 400px;
+  height: 400px;
+  min-width: 400px;
+  min-height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: lightblue;;
+  margin: 20px;
 }
-.grid-guest{
-    width: 400px;
-    height: 400px;
-    min-width: 400px;
-    min-height: 400px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgb(46, 113, 139);
-    margin: 20px;
-}
-
-.grid div{
-    width: 40px;
-    height: 40px;
+.grid-enemy {
+  width: 400px;
+  height: 400px;
+  min-width: 400px;
+  min-height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(46, 113, 139);
+  margin: 20px;
 }
 
-.ships-container{
-    width: 220px;
-    min-width: 220px;
-    height: 400px;
-    background-color: blue;
-    margin: 20px;
-    overflow-y: scroll;
+.grid div {
+  width: 40px;
+  height: 40px;
 }
 
-.destroyer-container{
-    width: 80px;
-    height: 40px;
-    background-color: white;
-    display: flex;
-    margin: 5px;
-}
-.destroyer-container-vertical{
-    width: 40px;
-    height: 80px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-    flex-wrap: wrap;
-}
-.submarine-container{
-    width: 120px;
-    height: 40px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-}
-.submarine-container-vertical{
-    width: 40px;
-    height: 120px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-    flex-wrap: wrap;
-}
-.cruiser-container{
-    width: 120px;
-    height: 40px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-}
-.cruiser-container-vertical{
-    width: 40px;
-    height: 120px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-    flex-wrap: wrap;
-}
-.battleship-container{
-    width: 160px;
-    height: 40px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-}
-.battleship-container-vertical{
-    width: 40px;
-    height: 160px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-    flex-wrap: wrap;
-}
-.carrier-container{
-    width: 200px;
-    height: 40px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-}
-.carrier-container-vertical{
-    width: 40px;
-    height: 200px;
-    background-color: whitesmoke;
-    display: flex;
-    margin: 5px;
-    flex-wrap: wrap;
+#tileStyle {
+  -webkit-box-shadow:inset 0px 0px 0px 0.2px #000000;
+  -moz-box-shadow:inset 0px 0px 0px 0.2px #000000;
+  box-shadow:inset 0px 0px 0px 0.2px #000000;
 }
 
-.ship div{
-    width: 40px;
-    height: 40px;
-}
-.ship{
-    /* border: solid tomato; */
-    background-color: whitesmoke;
-}
-
-.hit{
-    background: 
-         linear-gradient(to top left,
-             rgba(0,0,0,0) 0%,
-             rgba(0,0,0,0) calc(50% - 0.8px),
-             rgba(0,0,0,1) 50%,
-             rgba(0,0,0,0) calc(50% + 0.8px),
-             rgba(0,0,0,0) 100%),
-         linear-gradient(to top right,
-             rgba(0,0,0,0) 0%,
-             rgba(0,0,0,0) calc(50% - 0.8px),
-             rgba(0,0,0,1) 50%,
-             rgba(0,0,0,0) calc(50% + 0.8px),
-             rgba(0,0,0,0) 100%);
-    background-color: red;
+.ships-container {
+  width: 240px;
+  min-width: 220px;
+  height: 400px;
+  background-color: blue;
+  margin: 20px;
+  overflow-y: scroll;
 }
 
-.miss{
-    background-color: gray;
+.rotateHeadsUp {
+  margin: 10px;
+  color: whitesmoke;
+}
+
+.Destroyer-container {
+  width: 80px;
+  height: 40px;
+  background-color: white;
+  display: flex;
+  margin: 5px;
+  border-radius: 10px;
+}
+.Destroyer-container-v {
+  width: 40px;
+  height: 80px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+.Submarine-container {
+  width: 120px;
+  height: 40px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  border-radius: 10px;
+}
+.Submarine-container-v {
+  width: 40px;
+  height: 120px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+.Cruiser-container {
+  width: 120px;
+  height: 40px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  border-radius: 10px;
+}
+.Cruiser-container-v {
+  width: 40px;
+  height: 120px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+.Battleship-container {
+  width: 160px;
+  height: 40px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  border-radius: 10px;
+}
+.Battleship-container-v {
+  width: 40px;
+  height: 160px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+.Carrier-container {
+  width: 200px;
+  height: 40px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  border-radius: 10px;
+}
+.Carrier-container-v {
+  width: 40px;
+  height: 200px;
+  background-color: whitesmoke;
+  display: flex;
+  margin: 5px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+
+.ship div {
+  width: 40px;
+  height: 40px;
+}
+.ship {
+  /* border: solid tomato; */
+  background-color: whitesmoke;
+  -webkit-box-shadow:inset 0px 0px 0px 1px #000000;
+  -moz-box-shadow:inset 0px 0px 0px 1px #000000;
+  box-shadow:inset 0px 0px 0px 1px #000000;
+}
+
+.hit {
+  background: 
+       linear-gradient(to top left,
+           rgba(0,0,0,0) 0%,
+           rgba(0,0,0,0) calc(50% - 0.8px),
+           rgba(0,0,0,1) 50%,
+           rgba(0,0,0,0) calc(50% + 0.8px),
+           rgba(0,0,0,0) 100%),
+       linear-gradient(to top right,
+           rgba(0,0,0,0) 0%,
+           rgba(0,0,0,0) calc(50% - 0.8px),
+           rgba(0,0,0,1) 50%,
+           rgba(0,0,0,0) calc(50% + 0.8px),
+           rgba(0,0,0,0) 100%);
+  background-color: red;
+}
+
+.miss {
+  background-color: gray;
 }
 
 .connected, .ready {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 .connected span,
 .ready span {
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    background: red;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  background: red;
 }
 
-span.green{
-    background: green;
+span.green {
+  background: green;
 }

@@ -2,43 +2,43 @@
 
 <html>
     <head>
-        <meta charset='utf-8'>
-        <title>Battleship</title>
+        <title>Battleship!</title>
         <link rel='stylesheet' href='style.css'>
-        <script src='app.js' charset='utf-8'></script>
+        <script src='battleship.js'></script>
         <script src='/socket.io/socket.io.js'></script>
     </head>
     <body>
+        <h1 class="mainHeader">Battleship!</h1>
         <div class='panel'>
             <div class='ships-container'>
-                <div class='ship destroyer-container' draggable="true">
-                    <div id="destroyer-0"></div>
-                    <div id="destroyer-1"></div>
+                <div class='ship Destroyer-container' draggable="true">
+                    <div id="Destroyer-0"></div>
+                    <div id="Destroyer-1"></div>
                 </div>
-                <div class='ship submarine-container' draggable="true">
-                    <div id="submarine-0"></div>
-                    <div id="submarine-1"></div>
-                    <div id="submarine-2"></div>
+                <div class='ship Submarine-container' draggable="true">
+                    <div id="Submarine-0"></div>
+                    <div id="Submarine-1"></div>
+                    <div id="Submarine-2"></div>
                 </div>
-                <div class='ship cruiser-container' draggable="true">
-                    <div id="cruiser-0"></div>
-                    <div id="cruiser-1"></div>
-                    <div id="cruiser-2"></div>
+                <div class='ship Cruiser-container' draggable="true">
+                    <div id="Cruiser-0"></div>
+                    <div id="Cruiser-1"></div>
+                    <div id="Cruiser-2"></div>
                 </div>
-                <div class='ship battleship-container' draggable="true">
-                    <div id="battleship-0"></div>
-                    <div id="battleship-1"></div>
-                    <div id="battleship-2"></div>
-                    <div id="battleship-3"></div>
+                <div class='ship Battleship-container' draggable="true">
+                    <div id="Battleship-0"></div>
+                    <div id="Battleship-1"></div>
+                    <div id="Battleship-2"></div>
+                    <div id="Battleship-3"></div>
                 </div>
-                <div class='ship carrier-container' draggable="true">
-                    <div id="carrier-0"></div>
-                    <div id="carrier-1"></div>
-                    <div id="carrier-2"></div>
-                    <div id="carrier-3"></div>
-                    <div id="carrier-4"></div>
+                <div class='ship Carrier-container' draggable="true">
+                    <div id="Carrier-0"></div>
+                    <div id="Carrier-1"></div>
+                    <div id="Carrier-2"></div>
+                    <div id="Carrier-3"></div>
+                    <div id="Carrier-4"></div>
                 </div>
-                <h3>Click on the Ships to rotate them before placing them onto your grid!</h3>
+                <h3 class="rotateHeadsUp">Click on the Ships to rotate them before placing them onto your grid!</h3>
             </div>
             
             <div class='div-container game-container'>
@@ -46,11 +46,18 @@
                     <button id='start'>Start Game</button>
                     <button id='randomize'>Randomize Ships</button>
                     <button id='reset'>Reset Game</button>
-                    <button id="singlePlayerButton">Single Player</button>
-                    <button id="multiPlayerButton">Multi Player</button>
-                    <h3 id='whose-go'>Your Go</h3>
-                    <h4 id='score'>Host <span id='host-score'>0</span> - <span id='guest-score'>0</span> Guest </h4>
+                    <button id="multiPlayerButton">Find an Opponent</button>
                 </div>
+                <div class='div-grids'>
+                    <div class='grid grid-main'>
+    
+                    </div>
+                    <div class='grid grid-enemy'>
+                        
+                    </div>
+                </div>
+                <h3 id='whose-go'>Your Turn</h3>
+                <h4 id='score'>[Player 1] <span id='host-score'>0</span> - <span id='guest-score'>0</span> [Player 2] </h4>
                 <div class="player p1">
                     Player 1
                     <div class="connected">Connected <span></span></div>
@@ -60,14 +67,6 @@
                     Player 2
                     <div class="connected">Connected <span></span></div>
                     <div class="ready">Ready <span></span></div>
-                </div>
-                <div class='div-grids'>
-                    <div class='grid grid-host'>
-    
-                    </div>
-                    <div class='grid grid-guest'>
-                        
-                    </div>
                 </div>
             </div>
         </div>

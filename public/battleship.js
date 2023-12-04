@@ -1,5 +1,6 @@
 const mainC = [];
 const enemyC = [];
+const width = 10;
 
 const directions = ["h", "v"];
 
@@ -66,6 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ships = document.querySelectorAll('.ship');
     const btn = document.querySelector('#Play');
 
+    const startBtn = document.getElementById("start");
+    const randomBtn = document.querySelector('#randomize');
+    const turnsDisplay = document.querySelector('#turn');
+    const resetBtn = document.querySelector('#reset');
+
     let pID = 0;
     let curr = "user";
     let ready = false;
@@ -73,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let boardSet = false;
     let attack = -1;
 
-    btn.addEventListener('click', startGame);
+    startBtn.addEventListener("click", startGame);
 
     function startGame() {
         const socket = io();
@@ -98,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Player number ${num} has connected or disconnected`);
         });
 
-        // activate enemy ready
+        // Activate Enemy Ready
         socket.on('enemy-ready', num => {
             enemyReady = true;
             playerReady(num);
@@ -107,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        //check player status
+        // Check if Players Connected
         socket.on('check-players', function (players) {
             for (let i = 0; i < players.length; i++) {
                 let p = players[i];
@@ -123,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        // Ready  button click
+        // Ready Button
         startBtn.addEventListener('click', () => {
             if (boardSet) {
                 play(socket);
@@ -133,10 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
         // Setup event listeners for firing
-        enemyGrid.forEach(cell => {
-            cell.addEventListener('click', () => {
+        enemyGrid.forEach(tile => {
+            tile.addEventListener('click', () => {
                 if (curr === 'user' && ready && enemyReady) {
-                    attack = cell.dataset.id;
+                    attack = tile.dataset.id;
                     socket.emit('fire', attack);
                 }
             })
@@ -144,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function connectionStatus(num) {
             let val = parseInt(num);
-            let player = `.player${val + 1}`;
+            let player = `.p${parseInt(num) + 1}`;
             document.querySelector(`${player} .connected span`).classList.toggle('green');
             if (player === pID) {
                 document.querySelector(player).classList.toggle('bold');
@@ -152,14 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const startBtn = document.querySelector('#start');
-    const randomBtn = document.querySelector('#randomize');
-    const turnsDisplay = document.querySelector('#turn');
-    const resetBtn = document.querySelector('#reset');
-
-    render(mainGrid, mainC);
-    render(enemyGrid, enemyC);
-
+    render(mainGrid, mainC, width);
+    render(enemyGrid, enemyC, width);
 
     shipLayout.addEventListener('click', e => {
         if (e.target.parentElement.matches('div.ship'))
@@ -214,9 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function reset(e, shipLayout) {
     //one way to reset the game is to reload the page... but this cannot be reused for the randomize button
-    mainC.forEach(cell => {
-        if (cell.classList.contains('taken')) {
-            cell.className = '';
+    mainC.forEach(tile => {
+        if (tile.classList.contains('taken')) {
+            tile.className = '';
         }
     })
     if (shipLayout) {
@@ -252,35 +252,36 @@ function reset(e, shipLayout) {
 }
 
 // This function, renders the boards for the game,
-// it takes in parameters the grid for which we want to create cells for,
-// the cells array to keep record of the different cells created,
-// and the width of the boards, so we know how many suqare to create.
-function render(grid, cells) {
-    for (let i = 0; i < 10 * 10; i++) {
-        const cell = document.createElement('div');
-        cell.dataset.id = i;
-        grid.appendChild(cell);
-        cells.push(cell);
+// it takes in parameters the grid for which we want to create tiles for,
+// the tiles array to keep record of the different tiles created,
+// and the width of the boards, so we know how many square to create.
+function render(grid, tiles, width) {
+    for (let i = 0; i < width * width; i++) {
+        const tile = document.createElement('div');
+        tile.setAttribute("id", "tileStyle");
+        tile.dataset.id = i;
+        grid.appendChild(tile);
+        tiles.push(tile);
     }
 }
 
 // This function, places the ships in random positions in the main board in case it is a one-player game.
 // so this serves as the computer as enemy player.
-function generate(dir, ship, cells) {
+function generate(dir, ship, tiles) {
     let rand = dir[Math.floor(Math.random() * dir.length)];
     let current = ship.directions[rand];
 
     let direction;
-    if (rand === "horizontal") {
+    if (rand === "h") {
         direction = 1;
     } else {
         direction = 10;
     }
-    let randSt = Math.abs(Math.floor(Math.random() * cells.length - (ship.directions["horizontal"].length * direction)));
+    let randSt = Math.abs(Math.floor(Math.random() * tiles.length - (ship.directions["h"].length * direction)));
 
     let occupied = false;
     for (let i = 0; i < current.length; i++) {
-        if (cells[randSt + current[i]].classList.contains('taken')) {
+        if (tiles[randSt + current[i]].classList.contains('taken')) {
             occupied = true;
             break;
         }
@@ -302,16 +303,16 @@ function generate(dir, ship, cells) {
     }
 
     if (!occupied && !right && !left) {
-        current.forEach(index => cells[randSt + index].classList.add('taken', ship.name, 'ship'))
+        current.forEach(index => tiles[randSt + index].classList.add('taken', ship.name, 'ship'))
     } else {
-        generate(dir, ship, cells)
+        generate(dir, ship, tiles)
     }
 }
 
 function rotate(ship) {
     console.log(ship)
     console.log(ship.classList[1])
-    ship.classList.toggle(`${ship.classList[1]}-vertical`)
+    ship.classList.toggle(`${ship.classList[1]}-v`)
 }
 
 function grabShip(e, target) {
@@ -337,7 +338,7 @@ function dragEnd() {
 
 }
 
-function dragDrop(e, target, cells, container) {
+function dragDrop(e, target, tiles, container) {
     let draggedShipNameWithLastId = target.ship.lastElementChild.id;
     let draggedShipClass = draggedShipNameWithLastId.slice(0, -2);
     let draggedShipLastIndex = parseInt(draggedShipNameWithLastId.substr(-1));
@@ -346,31 +347,31 @@ function dragDrop(e, target, cells, container) {
     let droppedShipFirstId = receivingSquare - draggedShipIndex;
     let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingSquare;
 
-    let isVertical = [...target.ship.classList].some(className => className.includes('vertical'));
+    let isVertical = [...target.ship.classList].some(className => className.includes('v'));
 
     if (!isVertical) {
-        let current = allShips.find(ship => ship.name === draggedShipClass).directions.horizontal;
-        let occupied = current.some(index => cells[droppedShipFirstId + index].classList.contains('taken'));
+        console.log("draggedShipClass:", draggedShipClass);
+        let current = allShips.find(ship => ship.name === draggedShipClass).directions.h;
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
         if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
-            console.log('it fits on the same line and none of the cells are already taken');
             for (let i = 0; i < target.length; i++) {
-                cells[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
-            // show some kind of warning
+            Window.alert("Invalid Placement")
         }
     } else {
-        let current = allShips.find(ship => ship.name === draggedShipClass).directions.vertical;
-        let occupied = current.some(index => cells[droppedShipFirstId + index].classList.contains('taken'));
+        let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
 
         if (receivingSquare + (target.length - 1) * 10 < 100 && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                cells[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
-            //show some kind of warning
+            Window.alert("Invalid Placement")
         }
     }
     if (!container.querySelector('.ship')) boardSet = true;
