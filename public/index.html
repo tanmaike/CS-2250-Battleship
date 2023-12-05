@@ -4,32 +4,42 @@
     <head>
         <link rel='stylesheet' href='styles/index.css'>
         <title>Battleship Menu</title>
+        <script src='menu.js'></script>
     </head>
     <body>
         <div id="indexHeader">
-            <h1 class="indexTitle">Battleship</h1>
+            <h1 class="indexTitle">BATTLESHIP</h1>
         </div>
         <div id="buttonDiv">
-            <div>
+            <div class="leaderboardGuestplayDiv">
                 <button class="indexGameButton" onclick="location.href='game.html'" type="button">Play as Guest!</button>
                 <p class="buttonDesc">Jump in and play!</p>
             </div>
-            <div>
+            <div class="loginButtonTextDiv">
                 <button class="indexGameButton" onclick="location.href='login.html'" type="button">Login & Play!</button>
-                <p class="buttonDesc">Play and save your battles to the leaderboard!</p>
+                <p class="buttonDesc login">Play and save your battles to the leaderboard!</p>
             </div>
-            <div>
-                <button class="indexGameButton" onclick="location.href='game.html'" type="button">Top Players</button>
+            <div class="leaderboardGuestplayDiv">
+                <button class="indexGameButton" onclick="location.href='leaderboard.html'" type="button">Top Players</button>
                 <p class="buttonDesc">View our game's leaderboard!</p>
             </div>
         </div>
 
-        <div id="rulesAndAPI">
-            <div class="raaDesc">
-
+        <div id="rulesAndQuotes">
+            <div class="rulesDesc">
+                <h2 class="raqTitle">How to Play</h2>
+                <p class="raqText">
+                    Upon entering the game, you will be presented with two grids. The grid on the left is your own, and the grid on the right is the enemy's. Before the game properly begins, you will need to place your ships down onto the grid.
+                    <br><br>
+                    Once you are ready, click the "Find Player" button and wait for a player to connect. When you have found a player, you must click the "Ready Up" button. Once both players have readied up, the game will begin. 
+                    <br><br>
+                    The objective of the game is to sink the enemy's fleet while ensuring your own fleet stays afloat. Once a player has managed to sink the enemy's fleet, they are declared the winner, and the game finishes.
+                </p>
             </div>
-            <div class="raaDesc">
-
+            <div class="quoteDesc">
+                <h2 class="raqTitle">Quote of the Day</h2>
+                <p id="quoteText" class="raqText"></p>
+                <p id="quoteAuthor" class="raqText end">- </p>
             </div>
         </div>
     </body>
