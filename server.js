@@ -36,6 +36,12 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('player-connection', playerIndex);
     })
 
+    socket.on('user-disconnect', () => {
+        console.log(`Player ${playerIndex} has Disconnected`);
+        connections[playerIndex] = null;
+        socket.broadcast.emit('player-connection', playerIndex);
+    })
+
     socket.on('player-ready', () => {
         socket.broadcast.emit('enemy-ready', playerIndex);
         connections[playerIndex] = true;

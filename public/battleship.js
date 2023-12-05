@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener("click", startGame);
 
     function startGame() {
+        document.querySelector('#start').innerHTML = 'Disconnect';
         const socket = io();
 
         socket.on
@@ -91,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 pID = parseInt(num);
                 if (pID === 1) curr = "enemy";
+                readyBtn.disabled = false;
             }
             console.log(pID);
 
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         socket.on('player-connection', num => {
             connectionStatus(num);
-            console.log(`Player number ${num} has connected or disconnected`);
+            console.log(`Player ${num} has connected.`);
         });
 
         socket.on('enemy-ready', num => {
@@ -127,11 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         readyBtn.addEventListener('click', () => {
             if (boardSet) {
-                readyBtn.disabled = false;
-                startBtn.disabled = true;
                 play(socket);
             } else {
                 gameInformation.innerHTML = "Please place all ships";
+            }
+        })
+
+        startBtn.addEventListener('click', () => {
+            if (document.getElementById("start").innerHTML === 'Disconnect') {
+                userDiconnect();
             }
         })
 
@@ -151,6 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (player === pID) {
                 document.querySelector(player).classList.toggle('bold');
             }
+        }
+        
+        function userDiconnect() {
+            socket.emit("user-disconnect", socket.id);
+            socket.close();
+            console.log(`A Player has disconnected.`);
+            document.querySelector('#start').innerHTML = 'Find Player';
         }
     }
 
