@@ -15,7 +15,7 @@ io.on('connection', (socket) => {
     console.log('New Connection Established: ');
     let playerIndex = -1;
     for (const i in connections) {
-        console.log("Number of Connections =", i++ , "Connected:", connections[i]==null);
+        console.log("Connection Number =", i , "Connected:", connections[i]==null);
         if (connections[i]==null) {
             playerIndex = i
             break

@@ -1,18 +1,19 @@
 const mainC = [];
 const enemyC = [];
+const width = 10;
 
-const directions = ["h", "w"];
+const directions = ["h", "v"];
 
 function generateDirections(size) {
     const h = [];
-    const w = [];
+    const v = [];
 
     for (let i = 0; i < size; i++) {
         h.push(i);
-        w.push(i * 10);
+        v.push(i * 10);
     }
 
-    return { h, w };
+    return { h, v };
 }
 
 const allShips = [
@@ -52,7 +53,7 @@ function shipChar() {
 
 const game = {
     curr: "main",
-    playerScore: {
+    score: {
         main: shipChar(),
         enemy: shipChar()
     }
@@ -63,9 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
     const shipLayout = document.querySelector('.ships-div');
+    const gameInformation = document.querySelector('.gameHints');
     const ships = document.querySelectorAll('.ship');
 
     const startBtn = document.getElementById("start");
+    const readyBtn = document.getElementById("readyUp");
     const turnsDisplay = document.querySelector('#turn');
 
     let pID = 0;
@@ -80,9 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         const socket = io();
 
+        socket.on
+
         socket.on('player-number', num => {
             if (parseInt(num) === -1) {
-                infoDisplay.innerHTML = "Sorry, the server is full";
+                gameInformation.innerHTML = "Sorry, the server is full";
             } else {
                 pID = parseInt(num);
                 if (pID === 1) curr = "enemy";
@@ -94,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         socket.on('player-connection', num => {
             connectionStatus(num);
-            console.log(`Connection status has changed for player ${num}`);
+            console.log(`Player number ${num} has connected or disconnected`);
         });
 
         socket.on('enemy-ready', num => {
@@ -104,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 play(socket);
             }
         })
-=
+        
         socket.on('check-players', function (players) {
             for (let i = 0; i < players.length; i++) {
                 let p = players[i];
@@ -120,11 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        startBtn.addEventListener('click', () => {
+        readyBtn.addEventListener('click', () => {
             if (boardSet) {
+                readyBtn.disabled = false;
+                startBtn.disabled = true;
                 play(socket);
             } else {
-                infoDisplay.innerHTML = "Please place all ships";
+                gameInformation.innerHTML = "Please place all ships";
             }
         })
 
@@ -139,30 +146,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function connectionStatus(num) {
             let val = parseInt(num);
-            let player = `.p${val + 1}`;
-            let connectedSpan = document.querySelector(`${player} .connected span`);
-            if (connectedSpan.classList.contains('green')) {
-                connectedSpan.classList.remove('green');
-            } else {
-                connectedSpan.classList.add('green');
-            }
+            let player = `.p${parseInt(num) + 1}`;
+            document.querySelector(`${player} .connected span`).classList.toggle('green');
             if (player === pID) {
-                let playerElement = document.querySelector(player);
-                if (playerElement.classList.contains('bold')) {
-                    playerElement.classList.remove('bold');
-                } else {
-                    playerElement.classList.add('bold');
-                }
+                document.querySelector(player).classList.toggle('bold');
             }
         }
     }
 
-    render(mainGrid, mainC, 10);
-    render(enemyGrid, enemyC, 10);
+    render(mainGrid, mainC, width);
+    render(enemyGrid, enemyC, width);
 
-    shipLayout.addEventListener('click', element => {
-        if (element.target.parentElement.matches('div.ship'))
-            rotate(element.target.parentElement);
+    shipLayout.addEventListener('click', e => {
+        if (e.target.parentElement.matches('div.ship'))
+            rotate(e.target.parentElement);
     })
 
 
@@ -172,17 +169,62 @@ document.addEventListener('DOMContentLoaded', () => {
         length: 0
     }
 
-    shipLayout.addEventListener('mouseDown', element => {
-        grab(element, target);
+    shipLayout.addEventListener('mousedown', e => {
+        grabShip(e, target);
     })
-    ships.forEach(ship => ship.addEventListener('drag', element => { drag(element, target) }));
-    mainGrid.addEventListener('stopDrag', stopDrag);
-    mainGrid.addEventListener('stopDrop', stopDrop);
+    ships.forEach(ship => ship.addEventListener('dragstart', e => { dragStart(e, target) }));
+    mainGrid.addEventListener('dragover', dragOver);
+    mainGrid.addEventListener('dragenter', dragEnter);
     mainGrid.addEventListener('dragleave', dragLeave);
-    mainGrid.addEventListener('drop', element => { drop(element, target, mainC, shipLayout) });
+    mainGrid.addEventListener('drop', e => { 
+        dragDrop(e, target, mainC, shipLayout) 
+    });
     mainGrid.addEventListener('dragend', dragEnd);
 })
 
+function reset(e, shipLayout) {
+    mainC.forEach(tile => {
+        if (tile.classList.contains('taken')) {
+            tile.className = '';
+        }
+    })
+    if (shipLayout) {
+        shipLayout.innerHTML = `
+           <div class='ship Destroyer-div' draggable="true">
+                <div id="Destroyer-0"></div>
+                <div id="Destroyer-1"></div>
+            </div>
+            <div class='ship Submarine-div' draggable="true">
+                <div id="Submarine-0"></div>
+                <div id="Submarine-1"></div>
+                <div id="Submarine-2"></div>
+            </div>
+            <div class='ship Cruiser-div' draggable="true">
+                <div id="Cruiser-0"></div>
+                <div id="Cruiser-1"></div>
+                <div id="Cruiser-2"></div>
+            </div>
+            <div class='ship Battleship-div' draggable="true">
+                <div id="Battleship-0"></div>
+                <div id="Battleship-1"></div>
+                <div id="Battleship-2"></div>
+                <div id="Battleship-3"></div>
+            </div>
+            <div class='ship Carrier-div' draggable="true">
+                <div id="Carrier-0"></div>
+                <div id="Carrier-1"></div>
+                <div id="Carrier-2"></div>
+                <div id="Carrier-3"></div>
+                <div id="Carrier-4"></div>
+            </div>
+            <h3 class="rotateHeadsUp">Click on the Ships to rotate them before placing them onto your grid!</h3>`
+    }
+}
+
+// This function, renders the boards for the game,
+// it takes in parameters the grid for which we want to create tiles for,
+// the tiles array to keep record of the different tiles created,
+// and the width of the boards, so we know how many square to create.
 function render(grid, tiles, width) {
     for (let i = 0; i < width * width; i++) {
         const tile = document.createElement('div');
@@ -194,73 +236,74 @@ function render(grid, tiles, width) {
 }
 
 function rotate(ship) {
-    console.log(ship)
-    console.log(ship.classList[1])
-    if (ship.classList.contains(ship.classList[1] + '-v')) {
-        ship.classList.remove(ship.classList[1] + '-v');
-    } else {
-        ship.classList.add(ship.classList[1] + '-v');
-    }
+    ship.classList.toggle(`${ship.classList[1]}-v`)
 }
 
-function grab(e, target) {
+function grabShip(e, target) {
     target['name'] = e.target.id;
 }
 
-function drag(e, target) {
+function dragStart(e, target) {
     target['ship'] = e.target;
     target['length'] = e.target.childElementCount;
 }
 
-function stopDrag(e) {
+function dragOver(e) {
     e.preventDefault();
 }
-function stopDrop(e) {
+function dragEnter(e) {
     e.preventDefault();
 }
+function dragLeave() {
 
-function dragEnd() {  }
+}
 
-function dragLeave() {  }
+function dragEnd() {
 
-function drop(e, target, tiles, container) {
-    let draggedID = target.ship.lastElementChild.id;
-    let draggedClass = draggedID.slice(0, -2);
-    let dIndex = parseInt(target.name.substr(-1));
-    let dragTo = parseInt(e.target.dataset.id);
-    let droppedID = parseInt(draggedID.substr(-1)) - dIndex + dragTo;
+}
 
-    let isVertical = [...target.ship.classList].some(className => className.includes('v'));
-    console.log(droppedID)
+function dragDrop(e, target, tiles, container) {
+    let draggedShipNameWithLastId = target.ship.lastElementChild.id;
+    let draggedShipClass = draggedShipNameWithLastId.slice(0, -2);
+    let draggedShipLastIndex = parseInt(draggedShipNameWithLastId.substr(-1));
+    let draggedShipIndex = parseInt(target.name.substr(-1));
+    let receivingSquare = parseInt(e.target.dataset.id);
+    let droppedShipFirstId = receivingSquare - draggedShipIndex;
+    let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingSquare;
+
+    let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
+
     if (!isVertical) {
-        console.log("draggedClass:", draggedClass);
-        let current = allShips.find(ship => ship.name === draggedClass).directions.h;
-        let occupied = current.some(index => tiles[(dragTo - dIndex) + index].classList.contains('occupied'));
-        if (Math.floor(droppedID / 10) === Math.floor(dragTo / 10) && !occupied) {
+        let current = allShips.find(ship => ship.name === draggedShipClass).directions.h;
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
+        if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[dragTo - dIndex + i].classList.add('occupied', draggedClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
             Window.alert("Invalid Placement")
         }
     } else {
-        let current = allShips.find(ship => ship.name === draggedClass).directions.v;
-        let occupied = current.some(index => tiles[(dragTo - dIndex) + index].classList.contains('occupied'));
+        let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
+        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
 
-        if (dragTo + (target.length - 1) * 10 < 100 && !occupied) {
+        if (receivingSquare + (target.length - 1) * 10 < 100 && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[dragTo - dIndex + (10 * i)].classList.add('occupied', draggedClass, 'ship')
+                tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
-        } else {
-            Window.alert("Invalid Placement")
         }
     }
-    if (!container.querySelector('.ship')) boardSet = true;
+    if (!container.querySelector('.ships-div')) boardSet = true;
 }
 
 function play(socket) {
+    //if game over return
+    if (isGameOver) {
+        return;
+    }
+    //if not ready socket.emit('player-ready') and ready = true and playerReady(pID)
     if (!ready) {
         socket.emit('player-ready');
         ready = true;
@@ -280,9 +323,5 @@ function play(socket) {
 function playerReady(num) {
     let playerClass = `.p${parseInt(num) + 1}`;
     let readySpan = document.querySelector(`${playerClass} .ready span`);
-    if (readySpan.classList.contains('green')) {
-        readySpan.classList.remove('green');
-    } else {
-        readySpan.classList.add('green');
-    }
+    readySpan.classList.toggle('green');
 }
