@@ -276,6 +276,10 @@ function stopDrop(element) {
     element.preventDefault();
 }
 
+function dragEnd() {
+
+}
+
 function drop(element, target, tiles, container) {
     let draggedID = target.ship.lastElementChild.id;
     let draggedClass = draggedID.slice(0, -2);
