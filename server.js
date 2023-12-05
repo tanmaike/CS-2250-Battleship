@@ -15,16 +15,14 @@ io.on('connection', (socket) => {
     console.log('New Connection Established: ');
     let playerIndex = -1;
     for (const i in connections) {
-        console.log("i = ", i , " connections[i] = ", connections[i], " my condition is: ", connections[i]==null);
+        console.log("Number of Connections =", i++ , "Connected:", connections[i]==null);
         if (connections[i]==null) {
             playerIndex = i
             break
         }
     }
 
-    console.log('before emitting player-number');
     socket.emit('player-number', playerIndex);
-    console.log('after emitting player-number');
     
     if (playerIndex === -1) 
     return;
@@ -33,7 +31,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('player-connection', playerIndex);
 
     socket.on('disconnect', () => {
-        console.log(`Player ${playerIndex} has disconnected`);
+        console.log(`Player ${playerIndex} has Disconnected`);
         connections[playerIndex] = null;
         socket.broadcast.emit('player-connection', playerIndex);
     })
