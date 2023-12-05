@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Another player connected/disconnected
         socket.on('player-connection', num => {
             connectionStatus(num);
-            console.log(`Player number ${num} has connected or disconnected`);
+            console.log(`Connection status has changed for player number ${num}`);
         });
 
         // Activate Enemy Ready
@@ -148,9 +148,19 @@ document.addEventListener('DOMContentLoaded', () => {
         function connectionStatus(num) {
             let val = parseInt(num);
             let player = `.p${val + 1}`;
-            document.querySelector(`${player} .connected span`).classList.toggle('green');
+            let connectedSpan = document.querySelector(`${player} .connected span`);
+            if (connectedSpan.classList.contains('green')) {
+                connectedSpan.classList.remove('green');
+            } else {
+                connectedSpan.classList.add('green');
+            }
             if (player === pID) {
-                document.querySelector(player).classList.toggle('bold');
+                let playerElement = document.querySelector(player);
+                if (playerElement.classList.contains('bold')) {
+                    playerElement.classList.remove('bold');
+                } else {
+                    playerElement.classList.add('bold');
+                }
             }
         }
     }
@@ -158,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
     render(mainGrid, mainC, 10);
     render(enemyGrid, enemyC, 10);
 
-    shipLayout.addEventListener('click', e => {
-        if (e.target.parentElement.matches('div.ship'))
-            rotate(e.target.parentElement);
+    shipLayout.addEventListener('click', element => {
+        if (element.target.parentElement.matches('div.ship'))
+            rotate(element.target.parentElement);
     })
 
 
@@ -170,23 +180,23 @@ document.addEventListener('DOMContentLoaded', () => {
         length: 0
     }
 
-    shipLayout.addEventListener('mousedown', e => {
-        grabShip(e, target);
+    shipLayout.addEventListener('mouseDown', element => {
+        grab(element, target);
     })
-    ships.forEach(ship => ship.addEventListener('dragstart', e => { dragStart(e, target) }));
-    mainGrid.addEventListener('dragover', dragOver);
-    mainGrid.addEventListener('dragenter', dragEnter);
+    ships.forEach(ship => ship.addEventListener('drag', element => { drag(element, target) }));
+    mainGrid.addEventListener('stopDrag', stopDrag);
+    mainGrid.addEventListener('stopDrop', stopDrop);
     mainGrid.addEventListener('dragleave', dragLeave);
-    mainGrid.addEventListener('drop', e => { dragDrop(e, target, mainC, shipLayout) });
+    mainGrid.addEventListener('drop', element => { drop(element, target, mainC, shipLayout) });
     mainGrid.addEventListener('dragend', dragEnd);
 
-    resetBtn.addEventListener('click', e => {
+    resetBtn.addEventListener('click', element => {
         startBtn.disabled = false;
-        reset(e, shipLayout);
+        reset(element, shipLayout);
     });
 })
 
-function reset(e, shipLayout) {
+function reset(element, shipLayout) {
     mainC.forEach(tile => {
         if (tile.classList.contains('occupied')) {
             tile.className = '';
@@ -243,58 +253,57 @@ function render(grid, tiles, width) {
 function rotate(ship) {
     console.log(ship)
     console.log(ship.classList[1])
-    ship.classList.toggle(`${ship.classList[1]}-v`)
+    if (ship.classList.contains(ship.classList[1] + '-v')) {
+        ship.classList.remove(ship.classList[1] + '-v');
+    } else {
+        ship.classList.add(ship.classList[1] + '-v');
+    }
 }
 
-function grabShip(e, target) {
-    target['name'] = e.target.id;
+function grab(element, target) {
+    target['name'] = element.target.id;
 }
 
-function dragStart(e, target) {
-    target['ship'] = e.target;
-    target['length'] = e.target.childElementCount;
+function drag(element, target) {
+    target['ship'] = element.target;
+    target['length'] = element.target.childElementCount;
 }
 
-function dragOver(e) {
-    e.preventDefault();
+function stopDrag(element) {
+    element.preventDefault();
 }
-function dragEnter(e) {
-    e.preventDefault();
+function stopDrop(element) {
+    element.preventDefault();
 }
-function dragLeave() {  }
 
-function dragEnd() {  }
-
-function dragDrop(e, target, tiles, container) {
-    let draggedShipNameWithLastId = target.ship.lastElementChild.id;
-    let draggedShipClass = draggedShipNameWithLastId.slice(0, -2);
-    let draggedShipLastIndex = parseInt(draggedShipNameWithLastId.substr(-1));
-    let draggedShipIndex = parseInt(target.name.substr(-1));
-    let receivingSquare = parseInt(e.target.dataset.id);
-    let droppedShipFirstId = receivingSquare - draggedShipIndex;
-    let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingSquare;
+function drop(element, target, tiles, container) {
+    let draggedID = target.ship.lastElementChild.id;
+    let draggedClass = draggedID.slice(0, -2);
+    let dIndex = parseInt(target.name.substr(-1));
+    let dragTo = parseInt(element.target.dataset.id);
+    let droppedID = parseInt(draggedID.substr(-1)) - dIndex + dragTo;
 
     let isVertical = [...target.ship.classList].some(className => className.includes('v'));
 
     if (!isVertical) {
-        console.log("draggedShipClass:", draggedShipClass);
-        let current = allShips.find(ship => ship.name === draggedShipClass).directions.h;
-        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
-        if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
+        console.log("draggedClass:", draggedClass);
+        let current = allShips.find(ship => ship.name === draggedClass).directions.h;
+        let occupied = current.some(index => tiles[(dragTo - dIndex) + index].classList.contains('occupied'));
+        if (Math.floor(droppedID / 10) === Math.floor(dragTo / 10) && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[receivingSquare - draggedShipIndex + i].classList.add('occupied', draggedShipClass, 'ship')
+                tiles[dragTo - dIndex + i].classList.add('occupied', draggedClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
             Window.alert("Invalid Placement")
         }
     } else {
-        let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
-        let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
+        let current = allShips.find(ship => ship.name === draggedClass).directions.v;
+        let occupied = current.some(index => tiles[(dragTo - dIndex) + index].classList.contains('occupied'));
 
-        if (receivingSquare + (target.length - 1) * 10 < 100 && !occupied) {
+        if (dragTo + (target.length - 1) * 10 < 100 && !occupied) {
             for (let i = 0; i < target.length; i++) {
-                tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('occupied', draggedShipClass, 'ship')
+                tiles[dragTo - dIndex + (10 * i)].classList.add('occupied', draggedClass, 'ship')
             }
             container.removeChild(target.ship);
         } else {
@@ -329,5 +338,9 @@ function play(socket) {
 function playerReady(num) {
     let playerClass = `.p${parseInt(num) + 1}`;
     let readySpan = document.querySelector(`${playerClass} .ready span`);
-    readySpan.classList.toggle('green');
+    if (readySpan.classList.contains('green')) {
+        readySpan.classList.remove('green');
+    } else {
+        readySpan.classList.add('green');
+    }
 }
