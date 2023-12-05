@@ -52,7 +52,7 @@ function shipChar() {
 
 const game = {
     curr: "main",
-    score: {
+    playerScore: {
         main: shipChar(),
         enemy: shipChar()
     }
@@ -62,7 +62,7 @@ const game = {
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
-    const shipLayout = document.querySelector('.ships-container');
+    const shipLayout = document.querySelector('.ships-div');
     const ships = document.querySelectorAll('.ship');
 
     const startBtn = document.getElementById("start");
@@ -204,27 +204,27 @@ function reset(element, shipLayout) {
     })
     if (shipLayout) {
         shipLayout.innerHTML = `
-            <div class="ship Destroyer-container" draggable="true">
+            <div class="ship Destroyer-div" draggable="true">
                 <div id="Destroyer-0"></div>
                 <div id="Destroyer-1"></div>
             </div>
-            <div class="ship Submarine-container" draggable="true">
+            <div class="ship Submarine-div" draggable="true">
                 <div id="Submarine-0"></div>
                 <div id="Submarine-1"></div>
                 <div id="Submarine-2"></div>
             </div>
-            <div class="ship Cruiser-container" draggable="true">
+            <div class="ship Cruiser-div" draggable="true">
                 <div id="Cruiser-0"></div>
                 <div id="Cruiser-1"></div>
                 <div id="Cruiser-2"></div>
             </div>
-            <div class="ship Battleship-container" draggable="true">
+            <div class="ship Battleship-div" draggable="true">
                 <div id="Battleship-0"></div>
                 <div id="Battleship-1"></div>
                 <div id="Battleship-2"></div>
                 <div id="Battleship-3"></div>
             </div>
-            <div class="ship Carrier-container" draggable="true">
+            <div class="ship Carrier-div" draggable="true">
                 <div id="Carrier-0"></div>
                 <div id="Carrier-1"></div>
                 <div id="Carrier-2"></div>
