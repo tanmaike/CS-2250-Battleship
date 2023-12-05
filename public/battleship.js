@@ -284,9 +284,15 @@ function dragDrop(e, target, tiles, container) {
     let droppedShipFirstId = receivingSquare - draggedShipIndex;
     let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingSquare;
 
+    const invalidHTile = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93]
+    const invalidVTile = [99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60]
+
+    let splicedInvalidHTile = invalidHTile.splice(0, 10 * draggedShipIndex)
+    let splicedInvalidVTile = invalidVTile.splice(0, 10 * draggedShipIndex)
+    
     let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
-    if (!isVertical) {
+    if (!isVertical && !splicedInvalidHTile.includes(receivingSquare)) {
         let current = allShips.find(ship => ship.name === draggedShipClass).directions.h;
         let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
         if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
@@ -297,7 +303,7 @@ function dragDrop(e, target, tiles, container) {
         } else {
             Window.alert("Invalid Placement")
         }
-    } else {
+    } else if (!splicedInvalidVTile.includes(receivingSquare)) {
         let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
         let occupied = current.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
 
@@ -307,7 +313,7 @@ function dragDrop(e, target, tiles, container) {
             }
             container.removeChild(target.ship);
         }
-    }
+    } else return
     if (!container.querySelector('.ships-div')) boardSet = true;
 }
 

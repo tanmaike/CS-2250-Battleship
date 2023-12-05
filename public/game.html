@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Battleship Game</title>
+        <link rel='stylesheet' href='styles/game.css'>
+        <script src='battleship.js'></script>
+        <script src='/socket.io/socket.io.js'></script>
+    </head>
+    <body>
+        <h1 class="mainHeader">BATTLESHIP!</h1>
+        <div class='ship-panel'>
+            <div class='larger-ship-panel'>
+                <h3 class="rotateHeadsUp">Click on the Ships to rotate them before placing them onto your grid!</h3>
+                <div class='ships-div'>
+                    <div class='ship Destroyer-div' draggable="true">
+                        <div id="Destroyer-0"></div>
+                        <div id="Destroyer-1"></div>
+                    </div>
+                    <div class='ship Submarine-div' draggable="true">
+                        <div id="Submarine-0"></div>
+                        <div id="Submarine-1"></div>
+                        <div id="Submarine-2"></div>
+                    </div>
+                    <div class='ship Cruiser-div' draggable="true">
+                        <div id="Cruiser-0"></div>
+                        <div id="Cruiser-1"></div>
+                        <div id="Cruiser-2"></div>
+                    </div>
+                    <div class='ship Battleship-div' draggable="true">
+                        <div id="Battleship-0"></div>
+                        <div id="Battleship-1"></div>
+                        <div id="Battleship-2"></div>
+                        <div id="Battleship-3"></div>
+                    </div>
+                    <div class='ship Carrier-div' draggable="true">
+                        <div id="Carrier-0"></div>
+                        <div id="Carrier-1"></div>
+                        <div id="Carrier-2"></div>
+                        <div id="Carrier-3"></div>
+                        <div id="Carrier-4"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class='div-div game-div'>
+                <div class='div-header'>
+                    <button class='headerButton' id='start'>Find Player</button>
+                    <button class='headerButton disabled' id='readyUp' disabled>Ready Up</button>
+                </div>
+                <div class='div-battlefields'>
+                    <div class='grid grid-main'>
+    
+                    </div>
+                    <div class='grid grid-enemy'>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class='gameInfo'>
+                <h3 id='playerTurn'>Your Turn</h3>
+                <h4 id='playerScore'>[Player 1] <span id='mainScore'>0</span> - <span id='enemyScore'>0</span> [Player 2] </h3>
+                <div id ='connections' class="player p1">
+                    Player 1
+                    <div class="connected"><span></span> Connected</div>
+                    <div class="ready"><span></span> Ready</div>
+                </div>
+                <div id ='connections' class="player p2">
+                    Player 2
+                    <div class="connected"><span></span> Connected</div>
+                    <div class="ready"><span></span> Ready</div>
+                </div>
+                <div class="gameHints"></div>
+            </div>
+        </div>
+    </body>
+</html>

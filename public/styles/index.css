@@ -1,0 +1,74 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: #5f99c9;
+    background-image: url("seatexture.png");
+}
+
+#indexHeader {
+    align-self: center;
+    align-items: center;
+    text-align: center;
+    background-image: linear-gradient(#333333, #555555);
+    border-bottom: solid silver;
+    border-bottom-width: 2px;
+    padding: 24px;
+    margin: -8px;
+}
+
+.indexTitle {
+    color:white;
+    font-size: 36px;
+}
+
+#buttonDiv {
+    margin-top: 40px;
+    align-self: center;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+    display: flex;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+.indexGameButton {
+    background-color: #333333;
+    color: whitesmoke;
+    border: solid silver;
+    border-radius: 2px;
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 24px;
+    transition-duration: 0.2s;
+    border-radius: 5%;
+}
+
+.indexGameButton:hover {
+    background-color: #666666;
+}
+
+.indexGameButton:active {
+    background-color: #222222;
+}
+
+#buttonDescriptions {
+    align-self: center;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+    display: flex;
+    
+}
+
+.buttonDesc {
+    color: white;
+}
+
+.raaDesc {
+    background-color: #333333;
+    padding: 180px;
+    margin: 24px;
+}
