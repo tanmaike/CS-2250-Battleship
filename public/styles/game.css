@@ -99,12 +99,12 @@ body {
     height: 40px;
 }
 
-#tileStyle {
+.tileStyle {
     box-shadow:inset 0px 0px 0px 0.2px silver;
     transition-duration: 0.2s;
 }
 
-.grid-enemy #tileStyle:hover {
+.grid-enemy .tileStyle:hover {
     box-shadow:inset 0px 0px 0px 0.2px silver;
     background-color: rgba(0,0,0,0.2);
 }
