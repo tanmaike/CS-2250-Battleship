@@ -1,87 +1,90 @@
-const mainC = [];
-const enemyC = [];
-const width = 10;
-
-const directions = ["h", "v"];
-
-function generateDirections(size) {
-    const h = [];
-    const v = [];
-
-    for (let i = 0; i < size; i++) {
-        h.push(i);
-        v.push(i * 10);
-    }
-
-    return { h, v };
-}
-
-const allShips = [
-    {
-        name: 'Destroyer',
-        directions: generateDirections(2)
-    },
-    {
-        name: 'Submarine',
-        directions: generateDirections(3)
-    },
-    {
-        name: 'Cruiser',
-        directions: generateDirections(3)
-    },
-    {
-        name: 'Battleship',
-        directions: generateDirections(4)
-    },
-    {
-        name: 'Carrier',
-        directions: generateDirections(5)
-    }
-];
-
-function shipChar() {
-    let shipCharacteristics = { total: 0 };
-
-    shipCharacteristics['destroyer'] = 2;
-    shipCharacteristics['submarine'] = 3;
-    shipCharacteristics['cruiser'] = 3;
-    shipCharacteristics['battleship'] = 4;
-    shipCharacteristics['carrier'] = 5;
-
-    return shipCharacteristics;
-}
-
-const game = {
-    curr: "main",
-    score: {
-        main: shipChar(),
-        enemy: shipChar()
-    }
-};
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
     const shipLayout = document.querySelector('.ships-div');
     const gameInformation = document.querySelector('.gameHints');
     const ships = document.querySelectorAll('.ship');
-
     const startBtn = document.getElementById("start");
     const readyBtn = document.getElementById("readyUp");
-    const turnsDisplay = document.querySelector('#turn');
-
-    let pID = 0;
-    let curr = "user";
-    let ready = false;
-    let enemyReady = false;
+    const turnsDisplay = document.getElementById('playerTurn');
+    const mainC = [];
+    const enemyC = [];
+    let numShipsPlaced = 0;
     let boardSet = false;
+    let isGameOver = false;
+    let ready = false;
+    let pID = 0;
+    let enemyReady = false;
     let attack = -1;
+    let curr = "user";
+
+    const directions = ["h", "v"];
+
+    function generateDirections(size) {
+        const h = [];
+        const v = [];
+
+        for (let i = 0; i < size; i++) {
+            h.push(i);
+            v.push(i * 10);
+        }
+
+        return { h, v };
+    }
+
+    const allShips = [
+        {
+            name: 'Destroyer',
+            directions: generateDirections(2)
+        },
+        {
+            name: 'Submarine',
+            directions: generateDirections(3)
+        },
+        {
+            name: 'Cruiser',
+            directions: generateDirections(3)
+        },
+        {
+            name: 'Battleship',
+            directions: generateDirections(4)
+        },
+        {
+            name: 'Carrier',
+            directions: generateDirections(5)
+        }
+    ];
+
+    function shipChar() {
+        let shipCharacteristics = { total: 0 };
+
+        shipCharacteristics['destroyer'] = 2;
+        shipCharacteristics['submarine'] = 3;
+        shipCharacteristics['cruiser'] = 3;
+        shipCharacteristics['battleship'] = 4;
+        shipCharacteristics['carrier'] = 5;
+
+        return shipCharacteristics;
+    }
+
+    const game = {
+        curr: "main",
+        score: {
+            main: shipChar(),
+            enemy: shipChar()
+        }
+    };
+
+    readyBtn.disabled = true;
+    document.getElementById("readyUp").className = "headerButton disabled";
 
     startBtn.addEventListener("click", startGame);
 
     function startGame() {
         document.querySelector('#start').innerHTML = 'Disconnect';
+        readyBtn.disabled = false;
+        document.getElementById("readyUp").className = "headerButton";
+        
         const socket = io();
 
         socket.on
@@ -92,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 pID = parseInt(num);
                 if (pID === 1) curr = "enemy";
-                readyBtn.disabled = false;
             }
             console.log(pID);
 
@@ -130,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         readyBtn.addEventListener('click', () => {
             if (boardSet) {
                 play(socket);
+
             } else {
                 gameInformation.innerHTML = "Please place all ships";
             }
@@ -167,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    render(mainGrid, mainC, width);
-    render(enemyGrid, enemyC, width);
+    render(mainGrid, mainC, 10);
+    render(enemyGrid, enemyC, 10);
 
     shipLayout.addEventListener('click', e => {
         if (e.target.parentElement.matches('div.ship'))
@@ -193,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dragDrop(e, target, mainC, shipLayout) 
     });
     mainGrid.addEventListener('dragend', dragEnd);
-})
 
 function reset(e, shipLayout) {
     mainC.forEach(tile => {
@@ -234,10 +236,6 @@ function reset(e, shipLayout) {
     }
 }
 
-// This function, renders the boards for the game,
-// it takes in parameters the grid for which we want to create tiles for,
-// the tiles array to keep record of the different tiles created,
-// and the width of the boards, so we know how many square to create.
 function render(grid, tiles, width) {
     for (let i = 0; i < width * width; i++) {
         const tile = document.createElement('div');
@@ -300,8 +298,9 @@ function dragDrop(e, target, tiles, container) {
                 tiles[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
+            numShipsPlaced++;
         } else {
-            Window.alert("Invalid Placement")
+            window.alert("Invalid Placement")
         }
     } else if (!splicedInvalidVTile.includes(receivingSquare)) {
         let current = allShips.find(ship => ship.name === draggedShipClass).directions.v;
@@ -312,9 +311,12 @@ function dragDrop(e, target, tiles, container) {
                 tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
             }
             container.removeChild(target.ship);
+            numShipsPlaced++;
         }
-    } else return
-    if (!container.querySelector('.ships-div')) boardSet = true;
+    } else {
+        window.alert("Invalid Placement")
+    }
+    if (numShipsPlaced == 5) boardSet = true;
 }
 
 function play(socket) {
@@ -344,3 +346,10 @@ function playerReady(num) {
     let readySpan = document.querySelector(`${playerClass} .ready span`);
     readySpan.classList.toggle('green');
 }
+
+function gameOver(){
+    isGameOver = true;
+    window.alert("Game Over");
+    window.location.href("leaderboard.html");
+}
+})
