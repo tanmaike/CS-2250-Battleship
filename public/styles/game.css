@@ -42,6 +42,7 @@ body {
     font-size: 16px;
     transition-duration: 0.2s;
     border-radius: 5%;
+    box-shadow: 0 0 20px -10px #000;
 }
 
 .headerButton:hover {
@@ -76,8 +77,9 @@ body {
     min-height: 400px;
     display: flex;
     flex-wrap: wrap;
-    background-color: #4da1d1;
+    background-color: rgba(51, 51, 51, 0.8);
     margin: 20px;
+    box-shadow: 0 0 40px -10px #000;
 }
 
 .grid-enemy {
@@ -87,8 +89,9 @@ body {
     min-height: 400px;
     display: flex;
     flex-wrap: wrap;
-    background-color: #3756a3;
+    background-color: rgba(51, 51, 51, 0.8);
     margin: 20px;
+    box-shadow: 0 0 40px -10px #000;
 }
 
 .grid div {
@@ -97,13 +100,13 @@ body {
 }
 
 #tileStyle {
-    box-shadow:inset 0px 0px 0px 0.2px #000000;
+    box-shadow:inset 0px 0px 0px 0.2px silver;
     transition-duration: 0.2s;
 }
 
 .grid-enemy #tileStyle:hover {
-    box-shadow:inset 0px 0px 0px 0.2px #000000;
-    background-color: rgba(0,0,0,0.1);
+    box-shadow:inset 0px 0px 0px 0.2px silver;
+    background-color: rgba(0,0,0,0.2);
 }
 
 .larger-ship-panel {
@@ -117,6 +120,7 @@ body {
     border-radius: 1%;
     border-color: silver;
     border-width: 10px;
+    box-shadow: 0 0 40px -10px #000;
 }
 
 .larger-ship-panel::-webkit-scrollbar {
@@ -267,8 +271,8 @@ body {
     height: 40px;
 }
 .ship {
-    background-color: whitesmoke;
-    box-shadow:inset 0px 0px 0px 1px #000000;
+    background-color: #a0a0a0;
+    box-shadow:inset 0px 0px 0px 1px #333;
 }
 
 .hit {
@@ -302,6 +306,7 @@ body {
     justify-content: center;
     color: white;
     max-height: 380px;
+    box-shadow: 0 0 20px -10px #000;
 }
 
 h4.playerScore {
@@ -331,4 +336,8 @@ h4.playerScore {
 
 span.green {
     background: #00af00;
+}
+
+.gameHints {
+    margin-top: 18px;
 }

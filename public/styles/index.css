@@ -46,6 +46,7 @@ body {
     transition-duration: 0.2s;
     border-radius: 5%;
     cursor: pointer;
+    box-shadow: 0 0 40px -10px #000;
 }
 
 .indexGameButton:hover {
@@ -113,6 +114,7 @@ body {
     max-width: 456px;
     min-width: 456px;
     border-radius: 5%;
+    box-shadow: 0 0 40px -10px #000;
 }
 
 .quoteDesc {
@@ -123,4 +125,5 @@ body {
     max-width: 456px;
     min-width: 456px;
     border-radius: 5%;
+    box-shadow: 0 0 40px -10px #000;
 }
