@@ -2,21 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
     const shipLayout = document.querySelector('.ships-div');
-    const gameInformation = document.querySelector('.gameHints');
+    const gameInformation = document.getElementById('gameHints');
     const ships = document.querySelectorAll('.ship');
     const startBtn = document.getElementById("start");
     const readyBtn = document.getElementById("readyUp");
     const turnsDisplay = document.getElementById('playerTurn');
+    const shipDisplay = document.querySelector('.larger-ship-panel');
     const mainC = [];
     const enemyC = [];
     let numShipsPlaced = 0;
     let boardSet = false;
+    let gameStarted = false;
     let isGameOver = false;
     let ready = false;
     let pID = 0;
     let enemyReady = false;
     let currentPlayer = "user";
     let userPts = 0;
+    let didUserWin = false;
     let enemyPts = 0;
     let attack = -1
 
@@ -60,11 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function shipChar() {
         let shipCharacteristics = { total: 0 };
 
-        shipCharacteristics['destroyer'] = 2;
-        shipCharacteristics['submarine'] = 3;
-        shipCharacteristics['cruiser'] = 3;
-        shipCharacteristics['battleship'] = 4;
-        shipCharacteristics['carrier'] = 5;
+        shipCharacteristics['Destroyer'] = 2;
+        shipCharacteristics['Submarine'] = 3;
+        shipCharacteristics['Cruiser'] = 3;
+        shipCharacteristics['Battleship'] = 4;
+        shipCharacteristics['Carrier'] = 5;
 
         return shipCharacteristics;
     }
@@ -292,12 +295,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             window.alert("Invalid Placement")
         }
-        if (numShipsPlaced == 5) boardSet = true;
+        if (numShipsPlaced == 5) {
+            boardSet = true;
+            shipDisplay.remove();
+        }
     }
 
     function play(socket) {
         if (isGameOver) {
-            return;
+            gameOver();
         }
         if (!ready) {
             socket.emit('player-ready');
@@ -312,7 +318,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentPlayer === 'enemy') {
                 turnsDisplay.innerHTML = 'Enemy\'s Turn';
             }
-            gameInformation.innerHTML = "The game has begun.";
+            if (!gameStarted) {
+                gameStarted = true;
+                gameInformation.innerHTML = "The game has begun.";
+            }
         }
     }
 
@@ -322,12 +331,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const obj = Object.values(classList)
         if (!enemyS.classList.contains('boom') && currentPlayer === 'user' && !isGameOver) {
             if (obj.includes('taken')) {
+                gameInformation.innerHTML = 'It\'s a hit!';
                 userPts++
                 enemyS.classList.add('boom')
-                gameInformation.innerHTML = 'It\'s a hit!'
             } else {
+                gameInformation.innerHTML = 'It\'s a miss.';
                 enemyS.classList.add('miss')
-                gameInformation.innerHTML = 'It\'s a miss.'
+                
             }
         }
         checkWinState()
@@ -339,28 +349,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const hit = mainC[tile].classList.contains('taken')
             mainC[tile].classList.add(hit ? 'boom' : 'miss')
             if (mainC[tile].classList.contains('boom')) {
+                gameInformation.innerHTML = 'It\'s a hit!';
                 enemyPts++
-                gameInformation.innerHTML = 'It\'s a hit!'
             } else {
-                gameInformation.innerHTML = 'It\'s a miss.'
+                gameInformation.innerHTML = 'It\'s a miss.';
             }
             checkWinState()
         } 
         currentPlayer = 'user'
-        turnsDisplay.innerHTML = 'Your Turn'
+        turnsDisplay.innerHTML = 'Your Turn';
     }
 
     function checkWinState() {
         document.querySelector('#mainScore').innerHTML = userPts;
         document.querySelector('#enemyScore').innerHTML = enemyPts;
         if (userPts == 17) {
-            gameInformation.innerHTML = "YOU WIN"
-            gameOver()
+            isGameOver = true;
+            didUserWin = true;
         }
         
         if (enemyPts == 17) {
-            gameInformation.innerHTML = `YOU LOSE`
-            gameOver()
+            isGameOver = true;
         }
     }
 
@@ -370,9 +379,17 @@ document.addEventListener('DOMContentLoaded', () => {
         readySpan.classList.toggle('green');
     }
 
-    function gameOver(){
-        isGameOver = true;
-        window.alert("Game Over");
+    function gameOver() {
+        gameInformation.setAttribute("class", "gameOverText");
+        if (didUserWin) {
+            gameInformation.innerHTML = "YOU WIN!";
+        } else {
+            gameInformation.innerHTML = "You lose.";
+        }
+        const gameOverTimeout = setTimeout(returnToIndex, 3000);
+    }
+
+    function returnToIndex() {
         window.location.href = "index.html";
     }
 })

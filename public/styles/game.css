@@ -68,6 +68,8 @@ body {
 .ship-panel {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .grid-main {
@@ -104,7 +106,7 @@ body {
     transition-duration: 0.2s;
 }
 
-.tileStyle.boom {
+.grid-enemy .tileStyle.boom {
     box-shadow:inset 0px 0px 0px 0.2px silver;
     background-color: rgba(255, 0, 0, 0.2);
 }
@@ -271,8 +273,12 @@ body {
     background-color: #a1a1a1;
 }
 
-.taken {
+.tileStyle.taken {
     background-color: #aaaaaa;
+}
+
+.grid-main .tileStyle.boom {
+    background-color: rgb(150, 50, 50);
 }
 
 .ship div {
@@ -292,12 +298,12 @@ body {
     background-color: rgba(51, 51, 51, 0.8);
     padding: 12px;
     border-radius: 5%;
-    margin-top: 93px;
+    margin-top: 70px;
     align-content: center;
     text-align: center;
     justify-content: center;
     color: white;
-    max-height: 380px;
+    min-height: 375px;
     box-shadow: 0 0 20px -10px #000;
 }
 
@@ -330,6 +336,15 @@ span.green {
     background: #00af00;
 }
 
+.ready {
+    margin-bottom: 18px;
+}
+
 .gameHints {
-    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.gameOverText {
+    letter-spacing: 1px;
+    font-size: 36px;
 }
