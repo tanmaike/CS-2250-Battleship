@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
-    console.log(enemyGrid);
     const shipLayout = document.querySelector('.ships-div');
     const gameInformation = document.querySelector('.gameHints');
     const ships = document.querySelectorAll('.ship');
@@ -16,8 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let ready = false;
     let pID = 0;
     let enemyReady = false;
-    let attack = -1;
     let currentPlayer = "user";
+    let userPts = 0;
+    let enemyPts = 0;
+    let attack = -1
 
     const directions = ["h", "v"];
 
@@ -91,8 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const socket = io();
 
-        socket.on
-
         socket.on('player-number', num => {
             if (parseInt(num) === -1) {
                 gameInformation.innerHTML = "Sorry, the server is full";
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pID = parseInt(num);
                 if (pID === 1) currentPlayer = "enemy";
             }
-            console.log(pID);
+            console.log(`Your Player ID is ${pID}`);
 
             socket.emit('check-players');
         });
@@ -156,12 +155,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     socket.emit('fire', attack);
                 }
             })
-        })
+        });
+
+        socket.on('fire', id => {
+            console.log(`Fired tile:`, id);
+            enemyGo(id);
+            const tile = mainC[id];
+            socket.emit('fire-reply', tile.classList);
+            play(socket);
+        });
 
         socket.on('fire-reply', classList => {
-            revealSquare(classList)
-            play(socket)
-        })
+            console.log(`Fire-reply:`, classList);
+            revealTile(classList);
+            play(socket);
+        });
 
         function connectionStatus(num) {
             let val = parseInt(num);
@@ -246,9 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let draggedShipClass = draggedShipNameWithLastId.slice(0, -2);
         let draggedShipLastIndex = parseInt(draggedShipNameWithLastId.substr(-1));
         let draggedShipIndex = parseInt(target.name.substr(-1));
-        let receivingSquare = parseInt(e.target.dataset.id);
-        let droppedShipFirstId = receivingSquare - draggedShipIndex;
-        let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingSquare;
+        let receivingtile = parseInt(e.target.dataset.id);
+        let droppedShipFirstId = receivingtile - draggedShipIndex;
+        let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingtile;
 
         const invalidHTile = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93]
         const invalidVTile = [99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60]
@@ -258,25 +266,25 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
-        if (!isVertical && !splicedInvalidHTile.includes(receivingSquare)) {
+        if (!isVertical && !splicedInvalidHTile.includes(receivingtile)) {
             let currentPlayerent = allShips.find(ship => ship.name === draggedShipClass).directions.h;
             let occupied = currentPlayerent.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
-            if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingSquare / 10) && !occupied) {
+            if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingtile / 10) && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingSquare - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
+                    tiles[receivingtile - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
             } else {
                 window.alert("Invalid Placement")
             }
-        } else if (!splicedInvalidVTile.includes(receivingSquare)) {
+        } else if (!splicedInvalidVTile.includes(receivingtile)) {
             let currentPlayerent = allShips.find(ship => ship.name === draggedShipClass).directions.v;
             let occupied = currentPlayerent.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
 
-            if (receivingSquare + (target.length - 1) * 10 < 100 && !occupied) {
+            if (receivingtile + (target.length - 1) * 10 < 100 && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingSquare - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
+                    tiles[receivingtile - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
@@ -288,11 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function play(socket) {
-        //if game over return
         if (isGameOver) {
             return;
         }
-        //if not ready socket.emit('player-ready') and ready = true and playerReady(pID)
         if (!ready) {
             socket.emit('player-ready');
             ready = true;
@@ -301,33 +307,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (enemyReady) {
             if (currentPlayer === 'user') {
-                turnsDisplay.innerHTML = 'Your turn';
+                turnsDisplay.innerHTML = 'Your Turn';
             }
             if (currentPlayer === 'enemy') {
-                turnsDisplay.innerHTML = 'Enemy\'s turn';
+                turnsDisplay.innerHTML = 'Enemy\'s Turn';
             }
+            gameInformation.innerHTML = "The game has begun.";
         }
     }
 
-    function revealSquare(classList) {
-        const enemyS = computerGrid.querySelector(`div[data-id='${attack}']`)
+    function revealTile(classList) {
+        console.log(classList)
+        const enemyS = enemyGrid.querySelector(`div[data-id='${attack}']`)
         const obj = Object.values(classList)
         if (!enemyS.classList.contains('boom') && currentPlayer === 'user' && !isGameOver) {
-          if (obj.includes('destroyer')) destroyerCount++
-          if (obj.includes('submarine')) submarineCount++
-          if (obj.includes('cruiser')) cruiserCount++
-          if (obj.includes('battleship')) battleshipCount++
-          if (obj.includes('carrier')) carrierCount++
+            if (obj.includes('taken')) {
+                userPts++
+                enemyS.classList.add('boom')
+                gameInformation.innerHTML = 'It\'s a hit!'
+            } else {
+                enemyS.classList.add('miss')
+                gameInformation.innerHTML = 'It\'s a miss.'
+            }
         }
-        if (obj.includes('taken')) {
-          enemyS.classList.add('boom')
-        } else {
-          enemyS.classList.add('miss')
-        }
-        checkForWins()
+        checkWinState()
         currentPlayer = 'enemy'
-        if(gameMode === 'singlePlayer') playGameSingle()
-      }
+    }
+
+    function enemyGo(tile) {
+        if (!mainC[tile].classList.contains('boom')) {
+            const hit = mainC[tile].classList.contains('taken')
+            mainC[tile].classList.add(hit ? 'boom' : 'miss')
+            if (mainC[tile].classList.contains('boom')) {
+                enemyPts++
+                gameInformation.innerHTML = 'It\'s a hit!'
+            } else {
+                gameInformation.innerHTML = 'It\'s a miss.'
+            }
+            checkWinState()
+        } 
+        currentPlayer = 'user'
+        turnsDisplay.innerHTML = 'Your Turn'
+    }
+
+    function checkWinState() {
+        document.querySelector('#mainScore').innerHTML = userPts;
+        document.querySelector('#enemyScore').innerHTML = enemyPts;
+        if (userPts == 17) {
+            gameInformation.innerHTML = "YOU WIN"
+            gameOver()
+        }
+        
+        if (enemyPts == 17) {
+            gameInformation.innerHTML = `YOU LOSE`
+            gameOver()
+        }
+    }
 
     function playerReady(num) {
         let playerClass = `.p${parseInt(num) + 1}`;
@@ -338,6 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameOver(){
         isGameOver = true;
         window.alert("Game Over");
-        window.location.href("leaderboard.html");
+        window.location.href = "index.html";
     }
 })

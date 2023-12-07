@@ -1,10 +1,10 @@
-const PORT = process.env.PORT || 3000
 const express = require('express')
-const app = express()
-const http = require('http')
 const path = require('path')
-const server = http.createServer(app)
+const http = require('http')
+const PORT = process.env.PORT || 3000
 const socketio = require('socket.io')
+const app = express()
+const server = http.createServer(app)
 const io = socketio(server)
 
 app.use(express.static(path.join(__dirname, "public")))
@@ -54,6 +54,16 @@ io.on('connection', (socket) => {
             players.push({connected: true, ready: connections[i]});
         }
         socket.emit('check-players', players);
+    })
+
+    socket.on('fire', id => {
+        console.log(`Shot fired from ${playerIndex}`, id)
+        socket.broadcast.emit('fire', id)
+    })
+    
+    socket.on('fire-reply', square => {
+        console.log(square)
+        socket.broadcast.emit('fire-reply', square)
     })
 
     setTimeout(() => {
