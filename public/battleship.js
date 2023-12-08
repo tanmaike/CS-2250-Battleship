@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
-    const shipLayout = document.querySelector('.ships-div');
+    const shipContainer = document.querySelector('.ships-div');
     const gameInformation = document.getElementById('gameHints');
     const ships = document.querySelectorAll('.ship');
-    const startBtn = document.getElementById("start");
-    const readyBtn = document.getElementById("readyUp");
+    const strtBtn = document.getElementById("start");
+    const rdyBtn = document.getElementById("readyUp");
     const turnsDisplay = document.getElementById('playerTurn');
     const shipDisplay = document.querySelector('.larger-ship-panel');
-    const mainC = [];
-    const enemyC = [];
+    const mainBattlefield = [];
+    const enemyBattlefield = [];
     let numShipsPlaced = 0;
     let boardSet = false;
     let gameStarted = false;
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let ready = false;
     let pID = 0;
     let enemyReady = false;
-    let currentPlayer = "user";
+    let curr = "user";
     let userPts = 0;
-    let didUserWin = false;
     let enemyPts = 0;
     let attack = -1
+    let didUserWin = false;
 
     const directions = ["h", "v"];
 
@@ -73,24 +73,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const game = {
-        currentPlayer: "main",
+        curr: "main",
         score: {
             main: shipChar(),
             enemy: shipChar()
         }
     };
 
-    render(mainGrid, mainC, 10);
-    render(enemyGrid, enemyC, 10);
+    render(mainGrid, mainBattlefield, 10);
+    render(enemyGrid, enemyBattlefield, 10);
 
-    readyBtn.disabled = true;
+    rdyBtn.disabled = true;
     document.getElementById("readyUp").className = "headerButton disabled";
 
-    startBtn.addEventListener("click", startGame);
+    strtBtn.addEventListener("click", startGame);
 
     function startGame() {
         document.querySelector('#start').innerHTML = 'Disconnect';
-        readyBtn.disabled = false;
+        rdyBtn.disabled = false;
         document.getElementById("readyUp").className = "headerButton";
         
         const socket = io();
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameInformation.innerHTML = "Sorry, the server is full";
             } else {
                 pID = parseInt(num);
-                if (pID === 1) currentPlayer = "enemy";
+                if (pID === 1) curr = "enemy";
             }
             console.log(`Your Player ID is ${pID}`);
 
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         socket.on('player-connection', num => {
-            connectionStatus(num);
+            checkConnection(num);
             console.log(`Player ${num} has connected.`);
         });
 
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < players.length; i++) {
                 let p = players[i];
                 if (p.connected) {
-                    connectionStatus(i);
+                    checkConnection(i);
                 }
                 if (p.ready) {
                     playerReady(i);
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        readyBtn.addEventListener('click', () => {
+        rdyBtn.addEventListener('click', () => {
             if (boardSet) {
                 play(socket);
 
@@ -144,16 +144,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        startBtn.addEventListener('click', () => {
+        strtBtn.addEventListener('click', () => {
             if (document.getElementById("start").innerHTML === 'Disconnect') {
-                userDiconnect();
+                userDisconnect();
             }
         })
 
-        enemyC.forEach(tile => {
+        enemyBattlefield.forEach(tile => {
             tile.addEventListener('click', () => {
                 console.log(tile.dataset.id)
-                if (currentPlayer === 'user' && ready && enemyReady) {
+                if (curr === 'user' && ready && enemyReady) {
                     attack = tile.dataset.id;
                     socket.emit('fire', attack);
                 }
@@ -162,19 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         socket.on('fire', id => {
             console.log(`Fired tile:`, id);
-            enemyGo(id);
-            const tile = mainC[id];
-            socket.emit('fire-reply', tile.classList);
+            revealMainTile(id);
+            const tile = mainBattlefield[id];
+            socket.emit('fire-receive', tile.classList);
             play(socket);
         });
 
-        socket.on('fire-reply', classList => {
-            console.log(`Fire-reply:`, classList);
-            revealTile(classList);
+        socket.on('fire-receive', classList => {
+            console.log(`fire-receive:`, classList);
+            revealEnemyTile(classList);
             play(socket);
         });
 
-        function connectionStatus(num) {
+        function checkConnection(num) {
             let val = parseInt(num);
             let player = `.p${parseInt(num) + 1}`;
             document.querySelector(`${player} .connected span`).classList.toggle('green');
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        function userDiconnect() {
+        function userDisconnect() {
             socket.emit("user-disconnect", socket.id);
             socket.close();
             console.log(`A Player has disconnected.`);
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    shipLayout.addEventListener('click', e => {
+    shipContainer.addEventListener('click', e => {
         if (e.target.parentElement.matches('div.ship'))
             rotate(e.target.parentElement);
     })
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         length: 0
     }
 
-    shipLayout.addEventListener('mousedown', e => {
+    shipContainer.addEventListener('mousedown', e => {
         grabShip(e, target);
     })
     ships.forEach(ship => ship.addEventListener('dragstart', e => { dragStart(e, target) }));
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainGrid.addEventListener('dragenter', dragEnter);
     mainGrid.addEventListener('dragleave', dragLeave);
     mainGrid.addEventListener('drop', e => { 
-        dragDrop(e, target, mainC, shipLayout) 
+        dragDrop(e, target, mainBattlefield, shipContainer) 
     });
     mainGrid.addEventListener('dragend', dragEnd);
 
@@ -253,13 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function dragDrop(e, target, tiles, container) {
-        let draggedShipNameWithLastId = target.ship.lastElementChild.id;
-        let draggedShipClass = draggedShipNameWithLastId.slice(0, -2);
-        let draggedShipLastIndex = parseInt(draggedShipNameWithLastId.substr(-1));
+        let draggedShipName = target.ship.lastElementChild.id;
+        let draggedShipClass = draggedShipName.slice(0, -2);
+        let draggedShipLastIndex = parseInt(draggedShipName.substr(-1));
         let draggedShipIndex = parseInt(target.name.substr(-1));
-        let receivingtile = parseInt(e.target.dataset.id);
-        let droppedShipFirstId = receivingtile - draggedShipIndex;
-        let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingtile;
+        let receivingTile = parseInt(e.target.dataset.id);
+        let droppedShipFirstId = receivingTile - draggedShipIndex;
+        let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingTile;
 
         const invalidHTile = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93]
         const invalidVTile = [99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60]
@@ -269,25 +269,25 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
-        if (!isVertical && !splicedInvalidHTile.includes(receivingtile)) {
-            let currentPlayerent = allShips.find(ship => ship.name === draggedShipClass).directions.h;
-            let occupied = currentPlayerent.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
-            if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingtile / 10) && !occupied) {
+        if (!isVertical && !splicedInvalidHTile.includes(receivingTile)) {
+            let playerShipEnt = allShips.find(ship => ship.name === draggedShipClass).directions.h;
+            let occupied = playerShipEnt.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
+            if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingTile / 10) && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingtile - draggedShipIndex + i].classList.add('taken', draggedShipClass, 'ship')
+                    tiles[receivingTile - draggedShipIndex + i].classList.add('occupied', draggedShipClass, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
             } else {
                 window.alert("Invalid Placement")
             }
-        } else if (!splicedInvalidVTile.includes(receivingtile)) {
-            let currentPlayerent = allShips.find(ship => ship.name === draggedShipClass).directions.v;
-            let occupied = currentPlayerent.some(index => tiles[droppedShipFirstId + index].classList.contains('taken'));
+        } else if (!splicedInvalidVTile.includes(receivingTile)) {
+            let playerShipEnt = allShips.find(ship => ship.name === draggedShipClass).directions.v;
+            let occupied = playerShipEnt.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
 
-            if (receivingtile + (target.length - 1) * 10 < 100 && !occupied) {
+            if (receivingTile + (target.length - 1) * 10 < 100 && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingtile - draggedShipIndex + (10 * i)].classList.add('taken', draggedShipClass, 'ship')
+                    tiles[receivingTile - draggedShipIndex + (10 * i)].classList.add('occupied', draggedShipClass, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function play(socket) {
         if (isGameOver) {
-            gameOver();
+            endGame();
         }
         if (!ready) {
             socket.emit('player-ready');
@@ -312,10 +312,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (enemyReady) {
-            if (currentPlayer === 'user') {
+            if (curr === 'user') {
                 turnsDisplay.innerHTML = 'Your Turn';
             }
-            if (currentPlayer === 'enemy') {
+            if (curr === 'enemy') {
                 turnsDisplay.innerHTML = 'Enemy\'s Turn';
             }
             if (!gameStarted) {
@@ -325,30 +325,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function revealTile(classList) {
-        console.log(classList)
-        const enemyS = enemyGrid.querySelector(`div[data-id='${attack}']`)
+    function revealEnemyTile(classList) {
+        const enemyTile = enemyGrid.querySelector(`div[data-id='${attack}']`)
         const obj = Object.values(classList)
-        if (!enemyS.classList.contains('boom') && currentPlayer === 'user' && !isGameOver) {
-            if (obj.includes('taken')) {
+        if (!enemyTile.classList.contains('shot') && curr === 'user' && !isGameOver) {
+            if (obj.includes('occupied')) {
                 gameInformation.innerHTML = 'It\'s a hit!';
                 userPts++
-                enemyS.classList.add('boom')
+                enemyTile.classList.add('shot')
             } else {
                 gameInformation.innerHTML = 'It\'s a miss.';
-                enemyS.classList.add('miss')
+                enemyTile.classList.add('miss')
                 
             }
         }
         checkWinState()
-        currentPlayer = 'enemy'
+        curr = 'enemy'
     }
 
-    function enemyGo(tile) {
-        if (!mainC[tile].classList.contains('boom')) {
-            const hit = mainC[tile].classList.contains('taken')
-            mainC[tile].classList.add(hit ? 'boom' : 'miss')
-            if (mainC[tile].classList.contains('boom')) {
+    function revealMainTile(tile) {
+        if (!mainBattlefield[tile].classList.contains('shot')) {
+            const hit = mainBattlefield[tile].classList.contains('occupied')
+            mainBattlefield[tile].classList.add(hit ? 'shot' : 'miss')
+            if (mainBattlefield[tile].classList.contains('shot')) {
                 gameInformation.innerHTML = 'It\'s a hit!';
                 enemyPts++
             } else {
@@ -356,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             checkWinState()
         } 
-        currentPlayer = 'user'
+        curr = 'user'
         turnsDisplay.innerHTML = 'Your Turn';
     }
 
@@ -379,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
         readySpan.classList.toggle('green');
     }
 
-    function gameOver() {
+    function endGame() {
         gameInformation.setAttribute("class", "gameOverText");
         if (didUserWin) {
             gameInformation.innerHTML = "YOU WIN!";

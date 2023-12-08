@@ -61,9 +61,9 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('fire', id)
     })
     
-    socket.on('fire-reply', square => {
-        console.log(square)
-        socket.broadcast.emit('fire-reply', square)
+    socket.on('fire-receive', tile => {
+        console.log(tile)
+        socket.broadcast.emit('fire-receive', tile)
     })
 
     setTimeout(() => {

@@ -106,7 +106,7 @@ body {
     transition-duration: 0.2s;
 }
 
-.grid-enemy .tileStyle.boom {
+.grid-enemy .tileStyle.shot {
     box-shadow:inset 0px 0px 0px 0.2px silver;
     background-color: rgba(255, 0, 0, 0.2);
 }
@@ -273,11 +273,11 @@ body {
     background-color: #a1a1a1;
 }
 
-.tileStyle.taken {
+.tileStyle.occupied {
     background-color: #aaaaaa;
 }
 
-.grid-main .tileStyle.boom {
+.grid-main .tileStyle.shot {
     background-color: rgb(150, 50, 50);
 }
 
