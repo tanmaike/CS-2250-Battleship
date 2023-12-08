@@ -1,7 +1,5 @@
 import { register, login, addWin, getUserWins, getTop5 } from './backend.js';
 
-// Your battleship.js code...
-
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
@@ -394,6 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function returnToIndex() {
-        window.location.href = "index.html";
+        window.location.href = "leaderboard.html";
     }
 })
