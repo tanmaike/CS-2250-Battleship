@@ -1,3 +1,7 @@
+import { register, login, addWin, getUserWins, getTop5 } from './backend.js';
+
+// Your battleship.js code...
+
 document.addEventListener('DOMContentLoaded', () => {
     const mainGrid = document.querySelector('.grid-main');
     const enemyGrid = document.querySelector('.grid-enemy');
@@ -92,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#start').innerHTML = 'Disconnect';
         rdyBtn.disabled = false;
         document.getElementById("readyUp").className = "headerButton";
-        
+
         const socket = io();
 
         socket.on('player-number', num => {
@@ -119,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 play(socket);
             }
         })
-        
+
         socket.on('check-players', function (players) {
             for (let i = 0; i < players.length; i++) {
                 let p = players[i];
@@ -182,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector(player).classList.toggle('bold');
             }
         }
-        
+
         function userDisconnect() {
             socket.emit("user-disconnect", socket.id);
             socket.close();
@@ -210,8 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
     mainGrid.addEventListener('dragover', dragOver);
     mainGrid.addEventListener('dragenter', dragEnter);
     mainGrid.addEventListener('dragleave', dragLeave);
-    mainGrid.addEventListener('drop', e => { 
-        dragDrop(e, target, mainBattlefield, shipContainer) 
+    mainGrid.addEventListener('drop', e => {
+        dragDrop(e, target, mainBattlefield, shipContainer)
     });
     mainGrid.addEventListener('dragend', dragEnd);
 
@@ -266,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let splicedInvalidHTile = invalidHTile.splice(0, 10 * draggedShipIndex)
         let splicedInvalidVTile = invalidVTile.splice(0, 10 * draggedShipIndex)
-        
+
         let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
         if (!isVertical && !splicedInvalidHTile.includes(receivingTile)) {
@@ -336,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 gameInformation.innerHTML = 'It\'s a miss.';
                 enemyTile.classList.add('miss')
-                
+
             }
         }
         checkWinState()
@@ -354,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameInformation.innerHTML = 'It\'s a miss.';
             }
             checkWinState()
-        } 
+        }
         curr = 'user'
         turnsDisplay.innerHTML = 'Your Turn';
     }
@@ -366,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isGameOver = true;
             didUserWin = true;
         }
-        
+
         if (enemyPts == 17) {
             isGameOver = true;
         }
@@ -382,6 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameInformation.setAttribute("class", "gameOverText");
         if (didUserWin) {
             gameInformation.innerHTML = "YOU WIN!";
+            addWin();
         } else {
             gameInformation.innerHTML = "You lose.";
         }

@@ -4,13 +4,31 @@
     <head>
         <title>Battleship Game</title>
         <link rel='stylesheet' href='styles/game.css'>
-        <script src='battleship.js'></script>
-        <script src='/socket.io/socket.io.js'></script>
+        <script type="module" src="backend.js"></script>
+
+        <script  type="module" src='battleship.js'></script>
+
+        <script src='/socket.io/socket.io.js'></script>\
+        
+        <script>
+            function displayUserEmail() {
+                const userEmail = localStorage.getItem('userEmail');
+                if (userEmail) {
+                    const userEmailDisplay = document.getElementById('user-email-display');
+                    userEmailDisplay.textContent = userEmail;
+                    userEmailDisplay.style.display = 'block'; // Make the h1 tag visible
+                }
+            }
+        
+            window.onload = displayUserEmail; // Call the function when the window loads
+        </script>
     </head>
     <body>
         <div id="gameHeader">
             <h1 class="mainHeader">BATTLESHIP</h1>
         </div>
+        <h1 id="user-email-display" style="display: none;"></h1>
+
         <div class='ship-panel'>
             <div class='larger-ship-panel'>
                 <h3 class="rotateHeadsUp">Click on the Ships to rotate them before placing them onto your grid!</h3>
@@ -72,4 +90,5 @@
             </div>
         </div>
     </body>
+
 </html>
