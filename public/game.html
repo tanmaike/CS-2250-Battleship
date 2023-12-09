@@ -9,18 +9,18 @@
         <script  type="module" src='battleship.js'></script>
 
         <script src='/socket.io/socket.io.js'></script>\
-        
+
         <script>
             function displayUserEmail() {
                 const userEmail = localStorage.getItem('userEmail');
                 if (userEmail) {
                     const userEmailDisplay = document.getElementById('user-email-display');
                     userEmailDisplay.textContent = userEmail;
-                    userEmailDisplay.style.display = 'block'; // Make the h1 tag visible
+                    userEmailDisplay.style.display = 'block'; 
                 }
             }
         
-            window.onload = displayUserEmail; // Call the function when the window loads
+            window.onload = displayUserEmail; 
         </script>
     </head>
     <body>
