@@ -181,9 +181,19 @@ document.addEventListener('DOMContentLoaded', () => {
         function checkConnection(num) {
             let val = parseInt(num);
             let player = `.p${parseInt(num) + 1}`;
-            document.querySelector(`${player} .connected span`).classList.toggle('green');
+            var element = document.querySelector(`${player} .connected span`);
+            if (element.classList.contains('green')) {
+                element.classList.remove('green');
+            } else {
+                element.classList.add('green');
+            }
             if (player === pID) {
-                document.querySelector(player).classList.toggle('bold');
+                var element = document.querySelector(player);
+                if (element.classList.contains('bold')) {
+                    element.classList.remove('bold');
+                } else {
+                    element.classList.add('bold');
+                }
             }
         }
 
@@ -274,8 +284,21 @@ document.addEventListener('DOMContentLoaded', () => {
         let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
         if (!isVertical && !splicedInvalidHTile.includes(receivingTile)) {
-            let playerShipEnt = allShips.find(ship => ship.name === draggedShipClass).directions.h;
-            let occupied = playerShipEnt.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
+            let playerShipEnt;
+            for (let ship of allShips) {
+                if (ship.name === draggedShipClass) {
+                    playerShipEnt = ship.directions.h;
+                    break;
+                }
+            }
+            let occupied = false;
+            for (let index of playerShipEnt) {
+                if (tiles[droppedShipFirstId + index].classList.contains('occupied')) {
+                    occupied = true;
+                    break;
+                }
+            }
+
             if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingTile / 10) && !occupied) {
                 for (let i = 0; i < target.length; i++) {
                     tiles[receivingTile - draggedShipIndex + i].classList.add('occupied', draggedShipClass, 'ship')
@@ -286,9 +309,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.alert("Invalid Placement")
             }
         } else if (!splicedInvalidVTile.includes(receivingTile)) {
-            let playerShipEnt = allShips.find(ship => ship.name === draggedShipClass).directions.v;
-            let occupied = playerShipEnt.some(index => tiles[droppedShipFirstId + index].classList.contains('occupied'));
+            let playerShipEnt;
+            allShips.find(function (ship) {
+                if (ship.name === draggedShipClass) {
+                    playerShipEnt = ship.directions.v;
+                    return true;
+                }
+                return false;
+            });
 
+            let occupied = false;
+            playerShipEnt.forEach(function (index) {
+                if (tiles[droppedShipFirstId + index].classList.contains('occupied')) {
+                    occupied = true;
+                    return;
+                }
+            });
             if (receivingTile + (target.length - 1) * 10 < 100 && !occupied) {
                 for (let i = 0; i < target.length; i++) {
                     tiles[receivingTile - draggedShipIndex + (10 * i)].classList.add('occupied', draggedShipClass, 'ship')
@@ -350,7 +386,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function revealMainTile(tile) {
         if (!mainBattlefield[tile].classList.contains('shot')) {
             const hit = mainBattlefield[tile].classList.contains('occupied')
-            mainBattlefield[tile].classList.add(hit ? 'shot' : 'miss')
+            if (hit) {
+                mainBattlefield[tile].classList.add('shot');
+            } else {
+                mainBattlefield[tile].classList.add('miss');
+            }
             if (mainBattlefield[tile].classList.contains('shot')) {
                 gameInformation.innerHTML = 'It\'s a hit!';
                 enemyPts++
