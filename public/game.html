@@ -9,7 +9,7 @@
         <script  type="module" src='battleship.js'></script>
 
         <script src='/socket.io/socket.io.js'></script>\
-
+        
         <script>
             function displayUserEmail() {
                 const userEmail = localStorage.getItem('userEmail');
@@ -20,7 +20,7 @@
                 }
             }
         
-            window.onload = displayUserEmail; 
+            window.onload = displayUserEmail; // Call the function when the window loads
         </script>
     </head>
     <body>
