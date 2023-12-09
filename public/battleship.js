@@ -238,7 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function rotate(ship) {
-        ship.classList.toggle(`${ship.classList[1]}-v`)
+        var classNameToToggle = ship.classList[1] + '-v';
+
+        if (ship.classList.contains(classNameToToggle)) {
+            ship.classList.remove(classNameToToggle);
+        } else {
+            ship.classList.add(classNameToToggle);
+        }
+
     }
 
     function grabShip(e, target) {
