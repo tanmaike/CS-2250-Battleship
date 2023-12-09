@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    render(mainGrid, mainBattlefield, 10);
-    render(enemyGrid, enemyBattlefield, 10);
+    renderBattlefield(mainGrid, mainBattlefield, 10);
+    renderBattlefield(enemyGrid, enemyBattlefield, 10);
 
     rdyBtn.disabled = true;
     document.getElementById("readyUp").className = "headerButton disabled";
@@ -179,19 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function checkConnection(num) {
             let val = parseInt(num);
             let player = `.p${parseInt(num) + 1}`;
-            var element = document.querySelector(`${player} .connected span`);
-            if (element.classList.contains('green')) {
-                element.classList.remove('green');
-            } else {
-                element.classList.add('green');
-            }
+            document.querySelector(`${player} .connected span`).classList.toggle('green');
             if (player === pID) {
-                var element = document.querySelector(player);
-                if (element.classList.contains('bold')) {
-                    element.classList.remove('bold');
-                } else {
-                    element.classList.add('bold');
-                }
+                document.querySelector(player).classList.toggle('bold');
             }
         }
 
@@ -205,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     shipContainer.addEventListener('click', e => {
         if (e.target.parentElement.matches('div.ship'))
-            rotate(e.target.parentElement);
+            rotateShip(e.target.parentElement);
     })
 
 
@@ -216,18 +206,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     shipContainer.addEventListener('mousedown', e => {
-        grabShip(e, target);
+        shipGrab(e, target);
     })
-    ships.forEach(ship => ship.addEventListener('dragstart', e => { dragStart(e, target) }));
-    mainGrid.addEventListener('dragover', dragOver);
-    mainGrid.addEventListener('dragenter', dragEnter);
-    mainGrid.addEventListener('dragleave', dragLeave);
+    ships.forEach(ship => ship.addEventListener('dragstart', e => { beginDrag(e, target) }));
+    mainGrid.addEventListener('dragover', overDrag);
+    mainGrid.addEventListener('dragenter', enterDrag);
+    mainGrid.addEventListener('dragleave', leaveDrag);
     mainGrid.addEventListener('drop', e => {
-        dragDrop(e, target, mainBattlefield, shipContainer)
+        dropShip(e, target, mainBattlefield, shipContainer)
     });
-    mainGrid.addEventListener('dragend', dragEnd);
+    mainGrid.addEventListener('dragend', endDrag);
 
-    function render(grid, tiles, width) {
+    function renderBattlefield(grid, tiles, width) {
         for (let i = 0; i < width * width; i++) {
             const tile = document.createElement('div');
             tile.setAttribute("class", "tileStyle");
@@ -236,8 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tiles.push(tile);
         }
     }
-
-    function rotate(ship) {
+    
+    function rotateShip(ship) {
         var classNameToToggle = ship.classList[1] + '-v';
 
         if (ship.classList.contains(classNameToToggle)) {
@@ -245,68 +235,50 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             ship.classList.add(classNameToToggle);
         }
-
     }
 
-    function grabShip(e, target) {
+    function shipGrab(e, target) {
         target['name'] = e.target.id;
     }
 
-    function dragStart(e, target) {
+    function beginDrag(e, target) {
         target['ship'] = e.target;
         target['length'] = e.target.childElementCount;
     }
 
-    function dragOver(e) {
+    function overDrag(e) {
         e.preventDefault();
     }
-    function dragEnter(e) {
+    function enterDrag(e) {
         e.preventDefault();
     }
-    function dragLeave() {
+    function leaveDrag() { }
 
-    }
+    function endDrag() { }
 
-    function dragEnd() {
-
-    }
-
-    function dragDrop(e, target, tiles, container) {
-        let draggedShipName = target.ship.lastElementChild.id;
-        let draggedShipClass = draggedShipName.slice(0, -2);
-        let draggedShipLastIndex = parseInt(draggedShipName.substr(-1));
-        let draggedShipIndex = parseInt(target.name.substr(-1));
+    function dropShip(e, target, tiles, container) {
+        let selectedShipName = target.ship.lastElementChild.id;
+        let selectedShipType = selectedShipName.slice(0, -2);
+        let selectedShipLastIndex = parseInt(selectedShipName.substr(-1));
+        let selectedShipIndex = parseInt(target.name.substr(-1));
         let receivingTile = parseInt(e.target.dataset.id);
-        let droppedShipFirstId = receivingTile - draggedShipIndex;
-        let droppedShipLastId = draggedShipLastIndex - draggedShipIndex + receivingTile;
+        let selectedShipFront = receivingTile - selectedShipIndex;
+        let droppedShipBack = selectedShipLastIndex - selectedShipIndex + receivingTile;
 
         const invalidHTile = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 22, 32, 42, 52, 62, 72, 82, 92, 3, 13, 23, 33, 43, 53, 63, 73, 83, 93]
         const invalidVTile = [99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60]
 
-        let splicedInvalidHTile = invalidHTile.splice(0, 10 * draggedShipIndex)
-        let splicedInvalidVTile = invalidVTile.splice(0, 10 * draggedShipIndex)
+        let splicedInvalidHTile = invalidHTile.splice(0, 10 * selectedShipIndex)
+        let splicedInvalidVTile = invalidVTile.splice(0, 10 * selectedShipIndex)
 
         let isVertical = [...target.ship.classList].some(className => className.includes('-v'));
 
         if (!isVertical && !splicedInvalidHTile.includes(receivingTile)) {
-            let playerShipEnt;
-            for (let ship of allShips) {
-                if (ship.name === draggedShipClass) {
-                    playerShipEnt = ship.directions.h;
-                    break;
-                }
-            }
-            let occupied = false;
-            for (let index of playerShipEnt) {
-                if (tiles[droppedShipFirstId + index].classList.contains('occupied')) {
-                    occupied = true;
-                    break;
-                }
-            }
-
-            if (Math.floor(droppedShipLastId / 10) === Math.floor(receivingTile / 10) && !occupied) {
+            let playerShipEnt = allShips.find(ship => ship.name === selectedShipType).directions.h;
+            let occupied = playerShipEnt.some(index => tiles[selectedShipFront + index].classList.contains('occupied'));
+            if (Math.floor(droppedShipBack / 10) === Math.floor(receivingTile / 10) && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingTile - draggedShipIndex + i].classList.add('occupied', draggedShipClass, 'ship')
+                    tiles[receivingTile - selectedShipIndex + i].classList.add('occupied', selectedShipType, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
@@ -314,25 +286,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.alert("Invalid Placement")
             }
         } else if (!splicedInvalidVTile.includes(receivingTile)) {
-            let playerShipEnt;
-            allShips.find(function (ship) {
-                if (ship.name === draggedShipClass) {
-                    playerShipEnt = ship.directions.v;
-                    return true;
-                }
-                return false;
-            });
+            let playerShipEnt = allShips.find(ship => ship.name === selectedShipType).directions.v;
+            let occupied = playerShipEnt.some(index => tiles[selectedShipFront + index].classList.contains('occupied'));
 
-            let occupied = false;
-            playerShipEnt.forEach(function (index) {
-                if (tiles[droppedShipFirstId + index].classList.contains('occupied')) {
-                    occupied = true;
-                    return;
-                }
-            });
             if (receivingTile + (target.length - 1) * 10 < 100 && !occupied) {
                 for (let i = 0; i < target.length; i++) {
-                    tiles[receivingTile - draggedShipIndex + (10 * i)].classList.add('occupied', draggedShipClass, 'ship')
+                    tiles[receivingTile - selectedShipIndex + (10 * i)].classList.add('occupied', selectedShipType, 'ship')
                 }
                 container.removeChild(target.ship);
                 numShipsPlaced++;
@@ -391,11 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function revealMainTile(tile) {
         if (!mainBattlefield[tile].classList.contains('shot')) {
             const hit = mainBattlefield[tile].classList.contains('occupied')
-            if (hit) {
-                mainBattlefield[tile].classList.add('shot');
-            } else {
-                mainBattlefield[tile].classList.add('miss');
-            }
+            mainBattlefield[tile].classList.add(hit ? 'shot' : 'miss')
             if (mainBattlefield[tile].classList.contains('shot')) {
                 gameInformation.innerHTML = 'It\'s a hit!';
                 enemyPts++
